@@ -7,8 +7,11 @@ gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 
-# Use jquery as the JavaScript library
-gem 'jquery-rails'
+# Use Haml
+gem 'haml-rails', '~> 0.9'
+
+# Use bower as package manager for our assets
+gem 'bower-rails', '~> 0.9.2'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
