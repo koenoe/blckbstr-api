@@ -35,4 +35,4 @@ bower.json
 .powenv
 
 # Ignore project files
-.blckbstr.sublime-project
+blckbstr.sublime-project
