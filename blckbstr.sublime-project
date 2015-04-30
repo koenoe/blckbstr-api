@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings":
+	{
+		"font_size": 12,
+		"ignored_packages":
+		[
+			"Vintage"
+		],
+		"trim_trailing_white_space_on_save": true,
+
+		// The number of spaces a tab is considered equal to
+		"tab_size": 2,
+
+		// Set to true to insert spaces when tab is pressed
+		"translate_tabs_to_spaces": true
+	}
+}
