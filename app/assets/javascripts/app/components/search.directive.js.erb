@@ -1,0 +1,29 @@
+(function() {
+
+  'use strict';
+
+  angular
+    .module('app.widgets', [])
+    .directive('search', search);
+
+  function search() {
+    var directive = {
+      restrict: 'EA',
+      templateUrl: '<%= asset_path("app/components/search.directive.html") %>',
+      scope: {
+
+      },
+      controller: searchController,
+      controllerAs: 'test',
+      bindToController: true
+    };
+
+    return directive;
+  }
+
+  function searchController() {
+    var test = this;
+    console.log(test);
+  }
+
+})();

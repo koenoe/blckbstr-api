@@ -6,7 +6,7 @@
   "vendor": {
     "name": "bower-rails generated vendor assets",
     "dependencies": {
-      "jquery"      : "git://github.com/components/jquery.git"
+      "angular"      : "https://github.com/angular/bower-angular.git"
     }
   }
 }
