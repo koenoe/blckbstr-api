@@ -10,13 +10,22 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
- *= require_tree .
- *= require_self
  */
 
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+// Import custom Bootstrap variables
+@import "bootstrap-variables";
+
+// Import Bootstrap for Sass
+@import "bootstrap-custom";
+
+// Import bootstrap em font sizes
+@import "bootstrap-em";
+
 // Import project stuff
-@import "http://fonts.googleapis.com/css?family=Open+Sans:400italic,400,700,300";
-
+// @import "generated/*"; // Use this for Fontello
+@import "mixins/*";
 @import "base/*";
-
-@import "components/*";
+@import "components/**/*";
