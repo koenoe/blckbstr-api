@@ -10,6 +10,34 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+
+//= require jquery
+
 //= require angular
-//= require_tree ./app/components
-//= require app/app
+//= require angular-animate
+//= require angular-route
+//= require angular-sanitize
+//= require toastr
+//= require moment
+
+//= require app/app.module
+
+//= require app/blocks/exception/exception.module
+//= require app/blocks/exception/exception-handler.provider
+//= require app/blocks/exception/exception
+//= require app/blocks/logger/logger.module
+//= require app/blocks/logger/logger
+//= require app/blocks/router/router.module
+//= require app/blocks/router/routehelper
+
+//= require app/core/core.module
+//= require app/core/constants
+//= require app/core/config
+//= require app/core/dataservice
+
+//= require app/widgets/widgets.module
+//= require app/widgets/search.directive
+
+//= require app/home/home.module
+//= require app/home/config.route
+//= require app/home/home
