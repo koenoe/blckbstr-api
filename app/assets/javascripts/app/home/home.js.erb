@@ -1,30 +1,50 @@
 (function() {
-    'use strict';
+  'use strict';
 
-    angular
-      .module('app.home')
-      .controller('Home', Home);
+  angular
+    .module('app.home')
+    .controller('Home', Home);
 
-    Home.$inject = ['$q', 'dataservice', 'logger'];
+  Home.$inject = ['$q', 'dataservice', 'logger'];
 
-    function Home($q, dataservice, logger) {
+  function Home($q, dataservice, logger) {
 
-        /*jshint validthis: true */
-        // var vm = this;
+    var vm = this;
+    vm.backdrop = '';
+    vm.title = '';
+    vm.year = 'nog ophalen';
+    vm.director = 'nog ophalen';
+    vm.imdb = 'nog ophalen';
+    vm.show = false;
+    vm.preloaded = false;
 
-        activate();
+    activate();
 
-        function activate() {
-          var promises = [getRandomMovie()];
-          return $q.all(promises).then(function() {
-              logger.info('Activated Home View');
-          });
-        }
-
-        function getRandomMovie() {
-          return dataservice.getRandomMovie().then(function(data) {
-              return data;
-          });
-        }
+    function activate() {
+      var promises = [getRandomMovie(), preloadBackdrop()];
+      return $q.all(promises).then(function() {
+        vm.show = true;
+      });
     }
+
+    function getRandomMovie() {
+      return dataservice.getRandomMovie().then(function(data) {
+          vm.backdrop = data.backdrop;
+          vm.title = data.title;
+          vm.year = data.year;
+          vm.imdb_id = data.imdb_id;
+          return data;
+      });
+    }
+    // FIX ME: is not fired after random movie
+    function preloadBackdrop(a,b){
+      // Preload backdrop image
+      return angular.element(new Image()).bind('load', function(){
+        return true;
+      }).bind('error', function(){
+        vm.backdrop = '<%= image_path("backdrop.jpg") %>';
+        return true;
+      }).attr('src', vm.backdrop);
+    }
+  }
 })();

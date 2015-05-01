@@ -10,11 +10,7 @@
     var directive = {
       restrict: 'EA',
       templateUrl: '<%= asset_path("app/widgets/search.directive.html") %>',
-      scope: {
-
-      },
       controller: searchController,
-      controllerAs: 'test',
       bindToController: true
     };
 
@@ -22,8 +18,7 @@
   }
 
   function searchController() {
-    var test = this;
-    console.log(test);
+
   }
 
 })();

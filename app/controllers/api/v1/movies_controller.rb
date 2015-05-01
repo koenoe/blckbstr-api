@@ -20,7 +20,11 @@ class Api::V1::MoviesController < Api::V1::BaseController
       fetch_random_from_tmdb_movies
     end
 
-    movie = Movie.new(title: @tmdb_movie['title'], backdrop: @tmdb_backdrop)
+    # Fetch details of TMDb movie
+    tmdb_movie = Tmdb::Movie.detail(@tmdb_movie['id'])
+    tmdb_movie_year = Time.parse(tmdb_movie['release_date']).strftime('%Y')
+
+    movie = Movie.new(title: tmdb_movie['title'], imdb_id: tmdb_movie['imdb_id'], year: tmdb_movie_year, backdrop: @tmdb_backdrop)
 
     render(
       json: movie

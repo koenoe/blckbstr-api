@@ -10,6 +10,7 @@
       "angular-animate": "https://github.com/angular/bower-angular-animate.git",
       "angular-route": "https://github.com/angular/bower-angular-route.git",
       "angular-sanitize": "https://github.com/angular/bower-angular-sanitize.git",
+      "angular-preload-image": "https://github.com/RevillWeb/angular-preload-image.git",
       "toastr": "https://github.com/johnpapa/toastr-bower.git",
       "moment": "https://github.com/moment/moment.git"
     }
