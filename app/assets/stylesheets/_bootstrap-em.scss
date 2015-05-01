@@ -1,37 +1,37 @@
 $font-size-root: $font-size-base;
-$font-unit: 1em; // Pick em or rem here
+$font-unit: 1.1em; // Pick em or rem here
 
 $font-size-base: 1 * $font-unit;
 $font-size-large: ($font-size-large / $font-size-root) * $font-unit;
 $font-size-small: ($font-size-small / $font-size-root) * $font-unit;
- 
+
 $font-size-h1: ($font-size-h1 / $font-size-root) * $font-unit;
 $font-size-h2: ($font-size-h2 / $font-size-root) * $font-unit;
 $font-size-h3: ($font-size-h3 / $font-size-root) * $font-unit;
 $font-size-h4: ($font-size-h4 / $font-size-root) * $font-unit;
 $font-size-h5: ($font-size-h5 / $font-size-root) * $font-unit;
 $font-size-h6: ($font-size-h6 / $font-size-root) * $font-unit;
- 
+
 $line-height-computed: ($font-size-base * $line-height-base);
- 
+
 $padding-base-vertical: (($padding-base-vertical / $font-size-root) * $font-unit);
 $padding-base-horizontal: (($padding-base-horizontal / $font-size-root) * $font-unit);
- 
+
 $padding-large-vertical: (($padding-large-vertical / $font-size-root) * $font-unit);
 $padding-large-horizontal: (($padding-large-horizontal / $font-size-root) * $font-unit);
- 
+
 $padding-small-vertical: (($padding-small-vertical/ $font-size-root) * $font-unit);
 $padding-small-horizontal: (($padding-small-horizontal / $font-size-root) * $font-unit);
- 
+
 $padding-xs-vertical: (($padding-xs-vertical / $font-size-root) * $font-unit);
 $padding-xs-horizontal: (($padding-xs-horizontal / $font-size-root) * $font-unit);
- 
+
 $border-radius-base: (($border-radius-base / $font-size-root) * $font-unit);
 $border-radius-large: (($border-radius-large / $font-size-root) * $font-unit);
 $border-radius-small: (($border-radius-small / $font-size-root) * $font-unit);
- 
+
 $caret-width-base: (($caret-width-base / $font-size-root) * $font-unit);
 $caret-width-large: (($caret-width-large / $font-size-root) * $font-unit);
- 
+
 $table-cell-padding: (($table-cell-padding / $font-size-root) * $font-unit);
 $table-condensed-cell-padding: (($table-condensed-cell-padding / $font-size-root) * $font-unit);

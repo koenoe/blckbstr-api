@@ -1,10 +1,11 @@
-﻿%div{ "ng-show": "vm.show", class: "home backdrop", style: "background-image: url({{vm.backdrop}})"}
+%div{ "ng-show": "vm.show", class: "home backdrop", style: "background-image: url({{vm.backdrop}})"}
   %div{ class: "backdrop__subjacent" }
-    %p
+    %small
       Still from
       %a{ href: "//www.imdb.com/title/{{vm.imdb_id}}", target: "_blank" } {{vm.title}}
       ({{vm.year}})
 
 %div{ class: "logo" }
-  %img{ src: "http://inwallspeakers1.com/wp-content/uploads/2013/12/beats-by-dre-logo-png.png", width: "80px"}
+  %img{src: image_path("logo.png"), width: "80px"}
+
 %div{ "search" => true }

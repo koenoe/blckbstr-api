@@ -9,13 +9,13 @@
     outline: 0;
     box-shadow: none;
     border-radius: 0;
-    font-size: $font-size-h1;
+    font-size: $font-size-h3;
     height: auto;
 
     @include placeholder {
       color: $text-color;
       font-weight: 300;
-    }  
+    }
 
     &:hover
     &:active,
