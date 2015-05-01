@@ -1,10 +1,15 @@
 class Api::V1::BaseController < ApplicationController
   protect_from_forgery with: :null_session
 
-  before_action :destroy_session
+  before_filter :destroy_session, :set_tmdb_config
 
   def destroy_session
     request.session_options[:skip] = true
+  end
+
+  def set_tmdb_config
+    Tmdb::Api.key(ENV['tmdb_api_key'])
+    @tmdb_config = Tmdb::Configuration.new
   end
 
   def invalid_resource!(errors = [])
@@ -23,4 +28,5 @@ class Api::V1::BaseController < ApplicationController
 
     api_error(status: 500, errors: errors)
   end
+
 end
