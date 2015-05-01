@@ -12,9 +12,13 @@ class Api::V1::MoviesController < Api::V1::BaseController
     )
   end
   def random
-    @movie = Movie.new(title: 'Edwin', backdrop: 'https://image.tmdb.org/t/p/original/9IkNvxjwn1fr8MW9PUoOkbZvYNX.jpg')
+
+    tmdb_movie = Tmdb::Movie.popular.sample
+
+    movie = Movie.new(title: tmdb_movie['title'], backdrop: @tmdb_config.base_url + 'original' + tmdb_movie['backdrop_path'])
+
     render(
-      json: @movie
+      json: movie
     )
   end
 end
