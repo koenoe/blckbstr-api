@@ -13,12 +13,23 @@ class Api::V1::MoviesController < Api::V1::BaseController
   end
   def random
 
-    tmdb_movie = Tmdb::Movie.popular.sample
+    @tmdb_movies = [Tmdb::Movie.popular, Tmdb::Movie.top_rated, Tmdb::Movie.latest, Tmdb::Movie.upcoming, Tmdb::Movie.now_playing].flatten
+    fetch_random_from_tmdb_movies
 
-    movie = Movie.new(title: tmdb_movie['title'], backdrop: @tmdb_config.base_url + 'original' + tmdb_movie['backdrop_path'])
+    if @tmdb_backdrop.blank?
+      fetch_random_from_tmdb_movies
+    end
+
+    movie = Movie.new(title: @tmdb_movie['title'], backdrop: @tmdb_backdrop)
 
     render(
       json: movie
     )
   end
+
+  private
+    def fetch_random_from_tmdb_movies
+      @tmdb_movie = @tmdb_movies.sample
+      @tmdb_backdrop = @tmdb_config.base_url + 'original' + @tmdb_movie['backdrop_path'] unless @tmdb_movie['backdrop_path'].blank?
+    end
 end
