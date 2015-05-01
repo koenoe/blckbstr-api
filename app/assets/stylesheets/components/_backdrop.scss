@@ -6,6 +6,7 @@
 	left: 0;
 	top: 0;
 	background-size: cover;
+	background-position: center top;
 
 	&:before {
 		content: '';
@@ -23,6 +24,6 @@
 		bottom: 12px;
 		left: 12px;
 		color: #bbb;
-		font-size: 0.75em;
+		font-size: $font-size-small;
 	}
 }

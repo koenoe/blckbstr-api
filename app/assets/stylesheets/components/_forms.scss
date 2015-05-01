@@ -1,0 +1,26 @@
+.form {
+
+  &-control {
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid #fff;
+    color: $text-color;
+    text-align: center;
+    outline: 0;
+    box-shadow: none;
+    border-radius: 0;
+    font-size: $font-size-h1;
+    height: auto;
+
+    @include placeholder {
+      color: $text-color;
+      font-weight: 300;
+    }  
+
+    &:hover
+    &:active,
+    &:focus {
+      @extend .form-control;
+    }
+  }
+}

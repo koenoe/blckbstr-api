@@ -1,36 +1,11 @@
 // search bar
 .search-box {
-	// todo prefixes weg
-	-webkit-transform: translate(-50%,-50%);
-	transform: translate(-50%,-50%);
-	-webkit-transform-origin: 50% 50%;
-	transform-origin: 50% 50%;
+	@include translate(-50%, -50%);
 
-	//display: block;
 	top: 50%;
 	left: 50%;
 	width: 100%;
-	max-width: 600px;
+	max-width: 450px;
 	text-align: center;	
 	position: absolute;
-
-	color: #fff;
-
-	p {
-		font-size: 1.4em;
-	}
-
-	// todo: naar inputs module ofzo
-	input {
-		padding: 12px 0;
-		border: 0;
-		width: 70%;
-		font-size: 2em;
-		background: transparent;
-		outline: 0;
-		border-bottom: 2px solid #fff;
-		color: #fff;
-		text-align: center;
-		font-weight: bold;
-	}
 }

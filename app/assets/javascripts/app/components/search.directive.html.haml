@@ -1,6 +1,11 @@
 %div{ class: "search-box" } 
   %h1 Hello,
-  %p Don't you have a clue which movie to watch next?
-  %p Fill in your or multiple Letterboxd users and we will give you custom advice.
-  %input{ placeholder: "Letterboxd username" }
-  / %a{ href: '#', class: 'btn btn-primary' } Zoek
+  %p 
+    Don't you have a clue which movie to watch next?
+    %br
+    Fill in your or multiple Letterboxd users and we will give you custom advice.
+    %form
+      %div{ class: "form-group" }
+        %input{ class: "form-control", placeholder: "Letterboxd username" }
+      %div{ class: "form-group"}  
+        %input{ type: "submit", class: "btn btn-primary", value: "Give me advice" }
