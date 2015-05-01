@@ -12,18 +12,23 @@
     var vm = this;
     vm.backdrop = '';
     vm.title = '';
-    vm.year = 'nog ophalen';
-    vm.director = 'nog ophalen';
-    vm.imdb = 'nog ophalen';
+    vm.year = '';
+    vm.director = '';
+    vm.imdb = '';
     vm.show = false;
     vm.preloaded = false;
 
     activate();
 
     function activate() {
-      var promises = [getRandomMovie(), preloadBackdrop()];
-      return $q.all(promises).then(function() {
-        vm.show = true;
+      // var promises = [getRandomMovie(), preloadBackdrop()];
+      // return $q.all(promises).then(function() {
+      //   vm.show = true;
+      // });
+      $q.when(getRandomMovie()).then(function(){
+        $q.when(preloadBackdrop()).then(function(){
+          vm.show = true;
+        });
       });
     }
 
@@ -37,8 +42,7 @@
       });
     }
     // FIX ME: is not fired after random movie
-    function preloadBackdrop(a,b){
-      // Preload backdrop image
+    function preloadBackdrop(){
       return angular.element(new Image()).bind('load', function(){
         return true;
       }).bind('error', function(){
