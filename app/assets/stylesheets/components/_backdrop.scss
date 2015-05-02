@@ -19,11 +19,18 @@
 		bottom: 0;
 	}
 
-	&__subjacent {
-		position: fixed;
+	&__info {
+		position: absolute;
 		bottom: 12px;
 		left: 12px;
 		color: #bbb;
+		//width: 100%;
 		font-size: $font-size-smaller;
+	}
+
+	&__site-credits {
+		@extend .backdrop__info;
+		left: auto;
+		right: 12px;
 	}
 }

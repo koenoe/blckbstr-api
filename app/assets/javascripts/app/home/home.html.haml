@@ -1,9 +1,17 @@
 %div{ "ng-show": "vm.show", class: "home backdrop", style: "background-image: url({{vm.backdrop}})"}
-  %div{ class: "backdrop__subjacent" }
+  %div{ class: "backdrop__info" }
     %small
       Still from
       %a{ href: "//www.imdb.com/title/{{vm.imdb_id}}", target: "_blank" } {{vm.title}}
       ({{vm.year}})
+  %div{ class: "backdrop__site-credits" }
+    %small
+      Made by fans in Rotterdam, The Netherlands
+      %br
+      Film data supplied by
+      %a{ href: "//www.letterboxd.com/", target: "_blank" } Letterboxd
+      and
+      %a{ href: "//www.tmdb.org/", target: "_blank" } TMDb
 
 %div{ class: "logo" }
   %img{src: image_path("logo.png"), width: "80px"}

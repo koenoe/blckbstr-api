@@ -1,6 +1,7 @@
 .btn {
-  @include button-variant(#fff, transparent, #fff);
+  @include button-variant(#000, #fff, #fff);
 
+  border-width: 2px;
   outline: 0;
   font-size: $font-size-base;
 }

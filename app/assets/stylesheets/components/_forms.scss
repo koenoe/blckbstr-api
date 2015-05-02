@@ -1,5 +1,9 @@
 .form {
 
+  &-group {
+    margin-bottom: 20px;
+  }
+
   &-control {
     background: transparent;
     border: 0;
@@ -15,6 +19,7 @@
     @include placeholder {
       color: $text-color;
       font-weight: 300;
+      font-style: italic;
     }
 
     &:hover
