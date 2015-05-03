@@ -1,6 +1,6 @@
 // backdrop
 .backdrop {
-	position: absolute;
+	position: fixed;
 	right: 0;
 	bottom: 0;
 	left: 0;
@@ -26,6 +26,11 @@
 		color: #bbb;
 		//width: 100%;
 		font-size: $font-size-smaller;
+
+		a {
+			color: #bbb;
+			text-decoration: underline;
+		}
 	}
 
 	&__site-credits {

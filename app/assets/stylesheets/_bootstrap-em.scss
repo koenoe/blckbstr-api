@@ -1,5 +1,5 @@
 $font-size-root: $font-size-base;
-$font-unit: 1.1em; // Pick em or rem here
+$font-unit: 1em; // Pick em or rem here
 
 $font-size-base: 1 * $font-unit;
 $font-size-large: ($font-size-large / $font-size-root) * $font-unit;

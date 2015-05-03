@@ -1,16 +1,7 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
+html {
+  font-size: $font-size-root;
 }
-
-html,
 body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background: $body-bg ;
   color: $text-color;
   font-size: $font-size-base;
 }

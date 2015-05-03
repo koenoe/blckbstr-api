@@ -12,7 +12,8 @@
       "angular-sanitize": "https://github.com/angular/bower-angular-sanitize.git",
       "angular-preload-image": "https://github.com/RevillWeb/angular-preload-image.git",
       "toastr": "https://github.com/johnpapa/toastr-bower.git",
-      "moment": "https://github.com/moment/moment.git"
+      "moment": "https://github.com/moment/moment.git",
+      "animate-sass": "https://github.com/tgdev/animate-sass.git"
     }
   }
 }

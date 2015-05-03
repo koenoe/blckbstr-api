@@ -10,4 +10,25 @@
 	max-width: 480px;
 	text-align: center;
 	position: absolute;
+
+  h1, p, .form-group {
+    padding: 0;
+    margin: 0 0 20px 0;
+  }
+
+  h1 {
+    @include font-bold;
+  }
+
+  p {
+    line-height: 1.5;
+  }
+
+  form {
+    width: 75%;
+
+    .btn {
+
+    }
+  }
 }
