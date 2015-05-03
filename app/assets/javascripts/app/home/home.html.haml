@@ -1,9 +1,9 @@
-%div{ "ng-show": "vm.show", "ng-animate": "animate", class: "home backdrop", style: "background-image: url({{vm.backdrop}})"}
+%div{ "ng-show": "vm.show", "ng-animate": "animate", class: "home backdrop", style: "background-image: url({{vm.backdrop_url}})"}
   %div{ class: "backdrop__info" }
     %small
       Still from
       %a{ href: "//www.imdb.com/title/{{vm.imdb_id}}", target: "_blank" } {{vm.title}}
-      ({{vm.year}})
+      ({{vm.release_year}})
   %div{ class: "backdrop__site-credits" }
     %small
       Made by fans in Rotterdam, The Netherlands

@@ -10,11 +10,12 @@
   function Home($q, dataservice, logger) {
 
     var vm = this;
-    vm.backdrop = '';
+
+    vm.backdrop_url = '';
     vm.title = '';
-    vm.year = '';
-    vm.director = '';
-    vm.imdb = '';
+    vm.release_year = '';
+    vm.imdb_id = '';
+
     vm.show = false;
     vm.preloaded = false;
 
@@ -34,9 +35,9 @@
 
     function getRandomMovie() {
       return dataservice.getRandomMovie().then(function(data) {
-          vm.backdrop = data.backdrop;
+          vm.backdrop_url = data.backdrop_url;
           vm.title = data.title;
-          vm.year = data.year;
+          vm.release_year = data.release_year;
           vm.imdb_id = data.imdb_id;
           return data;
       });
