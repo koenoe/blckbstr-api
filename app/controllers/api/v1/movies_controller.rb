@@ -13,27 +13,45 @@ class Api::V1::MoviesController < Api::V1::BaseController
   end
   def random
 
-    @tmdb_movies = [Tmdb::Movie.popular, Tmdb::Movie.top_rated, Tmdb::Movie.latest, Tmdb::Movie.upcoming, Tmdb::Movie.now_playing].flatten
-    fetch_random_from_tmdb_movies
+    tmdb_movie = fetch_random
+    tmdb_movie = fetch_details(tmdb_movie['id'])
 
-    if @tmdb_backdrop.blank?
-      fetch_random_from_tmdb_movies
-    end
-
-    # Fetch details of TMDb movie
-    tmdb_movie = Tmdb::Movie.detail(@tmdb_movie['id'])
-    tmdb_movie_year = Time.parse(tmdb_movie['release_date']).strftime('%Y')
-
-    movie = Movie.new(title: tmdb_movie['title'], imdb_id: tmdb_movie['imdb_id'], year: tmdb_movie_year, backdrop: @tmdb_backdrop)
+    movie = Movie.new
+    movie.backdrop_base_url = @tmdb_config.base_url
+    movie.title = tmdb_movie['title']
+    movie.imdb_id = tmdb_movie['imdb_id']
+    movie.backdrop_path = tmdb_movie['backdrop_path']
+    movie.release_date = Date.parse(tmdb_movie['release_date'])
 
     render(
-      json: movie
+      json: {
+        title: movie.title,
+        backdrop_url: movie.backdrop_url(),
+        release_year: movie.release_date.strftime('%Y'),
+        imdb_id: movie.imdb_id
+      }
     )
   end
 
   private
-    def fetch_random_from_tmdb_movies
-      @tmdb_movie = @tmdb_movies.sample
-      @tmdb_backdrop = @tmdb_config.base_url + 'original' + @tmdb_movie['backdrop_path'] unless @tmdb_movie['backdrop_path'].blank?
+    def fetch_random
+
+      if @tmdb_movies.blank?
+        @tmdb_movies = [Tmdb::Movie.popular, Tmdb::Movie.top_rated, Tmdb::Movie.latest, Tmdb::Movie.upcoming, Tmdb::Movie.now_playing].flatten
+      end
+
+      tmdb_movie = @tmdb_movies.sample
+      if tmdb_movie['backdrop_path'].blank?
+        tmdb_movie = fetch_random
+      end
+      tmdb_movie
+    end
+    def fetch_details(tmdb_id)
+      tmdb_movie = Tmdb::Movie.detail(tmdb_id)
+      if tmdb_movie['imdb_id'].blank?
+        tmdb_movie = fetch_random
+        tmdb_movie = fetch_details(tmdb_movie['id'])
+      end
+      tmdb_movie
     end
 end
