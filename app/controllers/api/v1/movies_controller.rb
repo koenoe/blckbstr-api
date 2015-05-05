@@ -1,4 +1,5 @@
 class Api::V1::MoviesController < Api::V1::BaseController
+
   def index
 
     @movies = []
@@ -11,6 +12,7 @@ class Api::V1::MoviesController < Api::V1::BaseController
       json: @movies
     )
   end
+
   def random
 
     tmdb_movie = fetch_random
@@ -34,10 +36,13 @@ class Api::V1::MoviesController < Api::V1::BaseController
   end
 
   private
+
     def fetch_random
 
       if @tmdb_movies.blank?
-        @tmdb_movies = [Tmdb::Movie.popular, Tmdb::Movie.top_rated, Tmdb::Movie.latest, Tmdb::Movie.upcoming, Tmdb::Movie.now_playing].flatten
+        @tmdb_movies = Rails.cache.fetch('tmdb_movies_random', expires_in: 24.hours) do
+          [Tmdb::Movie.popular, Tmdb::Movie.top_rated, Tmdb::Movie.latest, Tmdb::Movie.upcoming, Tmdb::Movie.now_playing].flatten
+        end
       end
 
       tmdb_movie = @tmdb_movies.sample
@@ -46,6 +51,7 @@ class Api::V1::MoviesController < Api::V1::BaseController
       end
       tmdb_movie
     end
+
     def fetch_details(tmdb_id)
       tmdb_movie = Tmdb::Movie.detail(tmdb_id)
       if tmdb_movie['imdb_id'].blank?
@@ -54,4 +60,5 @@ class Api::V1::MoviesController < Api::V1::BaseController
       end
       tmdb_movie
     end
+
 end
