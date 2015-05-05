@@ -53,7 +53,9 @@ class Api::V1::MoviesController < Api::V1::BaseController
     end
 
     def fetch_details(tmdb_id)
-      tmdb_movie = Tmdb::Movie.detail(tmdb_id)
+      tmdb_movie = Rails.cache.fetch("tmdb_movie_#{tmdb_id}", expires_in: 24.hours) do
+        tmdb_movie = Tmdb::Movie.detail(tmdb_id)
+      end
       if tmdb_movie['imdb_id'].blank?
         tmdb_movie = fetch_random
         tmdb_movie = fetch_details(tmdb_movie['id'])
