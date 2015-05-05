@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/koenoe/letterboxd-scraper.git
+  revision: 317f9a48de0725bf30d9bab7ed0c639ea4d4bb78
+  specs:
+    letterboxd-scraper (0.1.0)
+      activemodel
+      nokogiri
+
+GIT
   remote: git://github.com/koenoe/themoviedb.git
   revision: 0b44da261aa9b6115cda7021015bf1e28d14027b
   specs:
@@ -183,6 +191,7 @@ DEPENDENCIES
   figaro
   haml-rails (~> 0.9)
   jbuilder (~> 2.0)
+  letterboxd-scraper!
   quiet_assets
   rails (~> 4.2)
   sass-rails (~> 5.0)
