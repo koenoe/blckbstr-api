@@ -15,17 +15,15 @@
     vm.title = '';
     vm.release_year = '';
     vm.imdb_id = '';
-
     vm.show = false;
-    vm.preloaded = false;
 
     activate();
 
     function activate() {
-      // var promises = [getRandomMovie(), preloadBackdrop()];
+      // var promises = [getRandomMovie()];
       // return $q.all(promises).then(function() {
-      //   vm.show = true;
       // });
+
       $q.when(getRandomMovie()).then(function(){
         $q.when(preloadBackdrop()).then(function(){
           vm.show = true;
@@ -44,12 +42,16 @@
     }
 
     function preloadBackdrop(){
-      return angular.element(new Image()).bind('load', function(){
-        return true;
-      }).bind('error', function(){
-        vm.backdrop = '<%= image_path("backdrop.jpg") %>';
-        return true;
-      }).attr('src', vm.backdrop);
+      var defer = $q.defer(),
+          $img = angular.element(new Image())
+
+      $img.bind('load', function(){
+        defer.resolve($img);
+      });
+
+      $img.attr('src', vm.backdrop_url);
+
+      return defer.promise;
     }
   }
 })();
