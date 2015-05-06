@@ -35,6 +35,7 @@ gem 'themoviedb', :github => 'koenoe/themoviedb'
 
 # Letterboxd scraper
 gem 'letterboxd-scraper', :github => 'koenoe/letterboxd-scraper'
+# gem 'letterboxd-scraper', :path => '~/Projects/letterboxd-scraper'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

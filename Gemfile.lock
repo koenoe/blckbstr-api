@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/koenoe/letterboxd-scraper.git
-  revision: 317f9a48de0725bf30d9bab7ed0c639ea4d4bb78
+  revision: 71ed21846105673130bff40b230270908f30d51d
   specs:
     letterboxd-scraper (0.1.0)
       activemodel

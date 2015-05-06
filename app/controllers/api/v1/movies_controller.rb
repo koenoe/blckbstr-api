@@ -1,15 +1,26 @@
 class Api::V1::MoviesController < Api::V1::BaseController
 
   def index
+    watchlists = []
 
-    @movies = []
-    (1..10).each do |i|
-      movie = Movie.new(title: 'Koen', backdrop: 'https://image.tmdb.org/t/p/original/4a60TZJqwoNPbturNpx1zBKqLAk.jpg')
-      @movies << movie
+    if params[:usernames].nil?
+      return render json: {
+        error: 'usernames are required.',
+        status: 400
+      }, status: 400
     end
 
+    params[:usernames].each do |username|
+      watchlist = Rails.cache.fetch("letterboxd_watchlist_#{username}", expires_in: 1.hours) do
+        Letterboxd::Scraper.fetch_watchlist(username)
+      end
+      watchlists << watchlist
+    end
+
+    matches = watchlists.inject(:&)
+
     render(
-      json: @movies
+      json: matches
     )
   end
 
@@ -38,7 +49,6 @@ class Api::V1::MoviesController < Api::V1::BaseController
   private
 
     def fetch_random
-
       if @tmdb_movies.blank?
         @tmdb_movies = Rails.cache.fetch('tmdb_movies_random', expires_in: 24.hours) do
           [Tmdb::Movie.popular, Tmdb::Movie.top_rated, Tmdb::Movie.latest, Tmdb::Movie.upcoming, Tmdb::Movie.now_playing].flatten
