@@ -23,19 +23,26 @@
 		position: absolute;
 		bottom: 12px;
 		left: 12px;
-		color: #bbb;
-		//width: 100%;
-		font-size: $font-size-smaller;
+		font-size: 0.9em;
 
 		a {
-			color: #bbb;
+			color: #fff;
 			text-decoration: underline;
 		}
 	}
 
 	&__site-credits {
-		@extend .backdrop__info;
-		left: auto;
+		position: absolute;
+		bottom: 12px;
 		right: 12px;
+		font-size: 0.75em;
+
+
+		&, a {
+			color: #bbb;
+		}
+		a {
+			text-decoration: underline;
+		}
 	}
 }
