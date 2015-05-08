@@ -3,6 +3,9 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 4.2'
 
+# We use MYSQL for our database
+gem 'mysql2'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 
@@ -37,6 +40,9 @@ gem 'themoviedb', :github => 'koenoe/themoviedb'
 gem 'letterboxd-scraper', :github => 'koenoe/letterboxd-scraper'
 # gem 'letterboxd-scraper', :path => '~/Projects/letterboxd-scraper'
 
+# OMDb api wrapper
+gem 'omdb'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -49,5 +55,6 @@ group :development, :test do
 
   gem 'better_errors'
   gem 'quiet_assets'
+  gem 'bullet'
 end
 

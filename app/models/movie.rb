@@ -1,7 +1,11 @@
 class Movie
   include ActiveModel::Model
 
-  attr_accessor :title, :release_date, :imdb_id, :backdrop_path, :backdrop_base_url
+  attr_accessor :title,
+                :release_date,
+                :imdb_id,
+                :backdrop_path,
+                :backdrop_base_url
 
   def backdrop_url(size = 'original')
     if self.backdrop_base_url.blank?
