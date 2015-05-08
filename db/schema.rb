@@ -11,7 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508193141) do
+ActiveRecord::Schema.define(version: 20150508222125) do
+
+  create_table "genres", force: :cascade do |t|
+    t.string   "title",      limit: 255
+    t.integer  "tmdb_id",    limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "genres", ["title"], name: "index_genres_on_title", using: :btree
+  add_index "genres", ["tmdb_id"], name: "index_genres_on_tmdb_id", unique: true, using: :btree
+
+  create_table "movie_genres", id: false, force: :cascade do |t|
+    t.integer "genre_id", limit: 4
+    t.integer "movie_id", limit: 4
+  end
+
+  add_index "movie_genres", ["genre_id", "movie_id"], name: "movie_genres_index", unique: true, using: :btree
 
   create_table "movie_roles", force: :cascade do |t|
     t.integer  "movie_id",   limit: 4
@@ -33,25 +50,27 @@ ActiveRecord::Schema.define(version: 20150508193141) do
   add_index "movie_views", ["movie_id", "user_id"], name: "movie_views_index", unique: true, using: :btree
 
   create_table "movies", force: :cascade do |t|
-    t.string   "title",             limit: 255
-    t.string   "tmdb_id",           limit: 255
-    t.string   "imdb_id",           limit: 255
-    t.string   "letterboxd_slug",   limit: 255
-    t.string   "backdrop_url",      limit: 255
-    t.text     "plot",              limit: 65535
-    t.string   "trailer_url",       limit: 255
+    t.string   "title",                 limit: 255
+    t.string   "tmdb_id",               limit: 255
+    t.string   "imdb_id",               limit: 255
+    t.string   "letterboxd_slug",       limit: 255
+    t.string   "backdrop_url",          limit: 255
+    t.text     "plot",                  limit: 65535
+    t.string   "trailer_url",           limit: 255
     t.date     "release_date"
-    t.integer  "runtime",           limit: 4
-    t.float    "letterboxd_rating", limit: 24
-    t.float    "imdb_rating",       limit: 24
-    t.float    "tmdb_rating",       limit: 24
-    t.integer  "budget",            limit: 4
-    t.string   "language",          limit: 255
-    t.string   "country",           limit: 255
-    t.string   "certification",     limit: 255
-    t.integer  "metascore",         limit: 4
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.integer  "runtime",               limit: 4
+    t.float    "letterboxd_rating",     limit: 24
+    t.float    "imdb_rating",           limit: 24
+    t.float    "tmdb_rating",           limit: 24
+    t.integer  "budget",                limit: 4
+    t.string   "language",              limit: 255
+    t.string   "country",               limit: 255
+    t.string   "certification",         limit: 255
+    t.integer  "metascore",             limit: 4
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.integer  "letterboxd_popularity", limit: 4
+    t.float    "tmdb_popularity",       limit: 24
   end
 
   add_index "movies", ["budget"], name: "index_movies_on_budget", using: :btree
@@ -60,12 +79,14 @@ ActiveRecord::Schema.define(version: 20150508193141) do
   add_index "movies", ["imdb_id"], name: "index_movies_on_imdb_id", unique: true, using: :btree
   add_index "movies", ["imdb_rating"], name: "index_movies_on_imdb_rating", using: :btree
   add_index "movies", ["language"], name: "index_movies_on_language", using: :btree
+  add_index "movies", ["letterboxd_popularity"], name: "index_movies_on_letterboxd_popularity", using: :btree
   add_index "movies", ["letterboxd_rating"], name: "index_movies_on_letterboxd_rating", using: :btree
   add_index "movies", ["letterboxd_slug"], name: "index_movies_on_letterboxd_slug", unique: true, using: :btree
   add_index "movies", ["metascore"], name: "index_movies_on_metascore", using: :btree
   add_index "movies", ["release_date"], name: "index_movies_on_release_date", using: :btree
   add_index "movies", ["runtime"], name: "index_movies_on_runtime", using: :btree
   add_index "movies", ["tmdb_id"], name: "index_movies_on_tmdb_id", unique: true, using: :btree
+  add_index "movies", ["tmdb_popularity"], name: "index_movies_on_tmdb_popularity", using: :btree
   add_index "movies", ["tmdb_rating"], name: "index_movies_on_tmdb_rating", using: :btree
 
   create_table "people", force: :cascade do |t|
