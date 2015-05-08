@@ -82,6 +82,8 @@ GEM
       thor (~> 0.14)
     globalid (0.3.5)
       activesupport (>= 4.1.0)
+    habtm_generator (0.3)
+      activerecord
     haml (4.0.6)
       tilt
     haml-rails (0.9.0)
@@ -210,6 +212,7 @@ DEPENDENCIES
   bullet
   byebug
   figaro
+  habtm_generator
   haml-rails (~> 0.9)
   jbuilder (~> 2.0)
   letterboxd-scraper!

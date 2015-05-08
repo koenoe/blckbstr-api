@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508183644) do
+ActiveRecord::Schema.define(version: 20150508191426) do
 
   create_table "movie_roles", force: :cascade do |t|
     t.integer  "movie_id",   limit: 4
@@ -24,6 +24,13 @@ ActiveRecord::Schema.define(version: 20150508183644) do
   add_index "movie_roles", ["movie_id"], name: "index_movie_roles_on_movie_id", using: :btree
   add_index "movie_roles", ["person_id"], name: "index_movie_roles_on_person_id", using: :btree
   add_index "movie_roles", ["role_id"], name: "index_movie_roles_on_role_id", using: :btree
+
+  create_table "movie_views", id: false, force: :cascade do |t|
+    t.integer "movie_id", limit: 4
+    t.integer "user_id",  limit: 4
+  end
+
+  add_index "movie_views", ["movie_id", "user_id"], name: "movie_views_index", unique: true, using: :btree
 
   create_table "movies", force: :cascade do |t|
     t.string   "title",             limit: 255
@@ -70,6 +77,17 @@ ActiveRecord::Schema.define(version: 20150508183644) do
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
   end
+
+  create_table "relationships", force: :cascade do |t|
+    t.integer  "follower_id", limit: 4
+    t.integer  "followed_id", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "relationships", ["followed_id"], name: "index_relationships_on_followed_id", using: :btree
+  add_index "relationships", ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true, using: :btree
+  add_index "relationships", ["follower_id"], name: "index_relationships_on_follower_id", using: :btree
 
   create_table "roles", force: :cascade do |t|
     t.string   "title",      limit: 255

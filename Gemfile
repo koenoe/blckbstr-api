@@ -53,6 +53,9 @@ group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
+  # To generate has and belongs to many models
+  gem 'habtm_generator'
+
   gem 'better_errors'
   gem 'quiet_assets'
   gem 'bullet'
