@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508173733) do
+ActiveRecord::Schema.define(version: 20150508182953) do
+
+  create_table "movie_roles", force: :cascade do |t|
+    t.integer  "movie_id",   limit: 4
+    t.integer  "person_id",  limit: 4
+    t.integer  "role_id",    limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "movie_roles", ["movie_id"], name: "index_movie_roles_on_movie_id", using: :btree
+  add_index "movie_roles", ["person_id"], name: "index_movie_roles_on_person_id", using: :btree
+  add_index "movie_roles", ["role_id"], name: "index_movie_roles_on_role_id", using: :btree
 
   create_table "movies", force: :cascade do |t|
     t.string   "title",             limit: 255
@@ -49,4 +61,25 @@ ActiveRecord::Schema.define(version: 20150508173733) do
   add_index "movies", ["tmdb_id"], name: "index_movies_on_tmdb_id", unique: true, using: :btree
   add_index "movies", ["tmdb_rating"], name: "index_movies_on_tmdb_rating", using: :btree
 
+  create_table "people", force: :cascade do |t|
+    t.string   "name",           limit: 255
+    t.string   "place_of_birth", limit: 255
+    t.date     "birthdate"
+    t.date     "deathdate"
+    t.string   "image_url",      limit: 255
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string   "title",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "roles", ["title"], name: "index_roles_on_title", using: :btree
+
+  add_foreign_key "movie_roles", "movies"
+  add_foreign_key "movie_roles", "people"
+  add_foreign_key "movie_roles", "roles"
 end
