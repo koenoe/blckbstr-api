@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508182953) do
+ActiveRecord::Schema.define(version: 20150508183644) do
 
   create_table "movie_roles", force: :cascade do |t|
     t.integer  "movie_id",   limit: 4
@@ -78,6 +78,21 @@ ActiveRecord::Schema.define(version: 20150508182953) do
   end
 
   add_index "roles", ["title"], name: "index_roles_on_title", using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "letterboxd_username", limit: 255
+    t.string   "imdb_username",       limit: 255
+    t.string   "tmdb_username",       limit: 255
+    t.string   "name",                limit: 255
+    t.string   "email",               limit: 255
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["imdb_username"], name: "index_users_on_imdb_username", unique: true, using: :btree
+  add_index "users", ["letterboxd_username"], name: "index_users_on_letterboxd_username", unique: true, using: :btree
+  add_index "users", ["tmdb_username"], name: "index_users_on_tmdb_username", unique: true, using: :btree
 
   add_foreign_key "movie_roles", "movies"
   add_foreign_key "movie_roles", "people"
