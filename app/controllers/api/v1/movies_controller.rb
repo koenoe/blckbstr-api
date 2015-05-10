@@ -63,19 +63,12 @@ class Api::V1::MoviesController < Api::V1::BaseController
     tmdb_movie = fetch_random
     tmdb_movie = fetch_details(tmdb_movie['id'])
 
-    movie = Movie.new
-    movie.backdrop_base_url = @tmdb_config.base_url
-    movie.title = tmdb_movie['title']
-    movie.imdb_id = tmdb_movie['imdb_id']
-    movie.backdrop_path = tmdb_movie['backdrop_path']
-    movie.release_date = Date.parse(tmdb_movie['release_date'])
-
     render(
       json: {
-        title: movie.title,
-        backdrop_url: movie.backdrop_url(),
-        release_year: movie.release_date.strftime('%Y'),
-        imdb_id: movie.imdb_id
+        title: tmdb_movie['title'],
+        backdrop_url: @tmdb_config.base_url + 'original' + tmdb_movie['backdrop_path'],
+        release_year: Date.parse(tmdb_movie['release_date']).strftime('%Y'),
+        imdb_id: tmdb_movie['imdb_id']
       }
     )
   end
