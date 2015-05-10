@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508222125) do
+ActiveRecord::Schema.define(version: 20150509092921) do
 
   create_table "genres", force: :cascade do |t|
     t.string   "title",      limit: 255
@@ -50,27 +50,27 @@ ActiveRecord::Schema.define(version: 20150508222125) do
   add_index "movie_views", ["movie_id", "user_id"], name: "movie_views_index", unique: true, using: :btree
 
   create_table "movies", force: :cascade do |t|
-    t.string   "title",                 limit: 255
-    t.string   "tmdb_id",               limit: 255
-    t.string   "imdb_id",               limit: 255
-    t.string   "letterboxd_slug",       limit: 255
-    t.string   "backdrop_url",          limit: 255
-    t.text     "plot",                  limit: 65535
-    t.string   "trailer_url",           limit: 255
+    t.string   "title",               limit: 255
+    t.string   "tmdb_id",             limit: 255
+    t.string   "imdb_id",             limit: 255
+    t.string   "letterboxd_slug",     limit: 255
+    t.string   "tmdb_backdrop_path",  limit: 255
+    t.text     "plot",                limit: 65535
+    t.string   "trailer_url",         limit: 255
     t.date     "release_date"
-    t.integer  "runtime",               limit: 4
-    t.float    "letterboxd_rating",     limit: 24
-    t.float    "imdb_rating",           limit: 24
-    t.float    "tmdb_rating",           limit: 24
-    t.integer  "budget",                limit: 4
-    t.string   "language",              limit: 255
-    t.string   "country",               limit: 255
-    t.string   "certification",         limit: 255
-    t.integer  "metascore",             limit: 4
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.integer  "letterboxd_popularity", limit: 4
-    t.float    "tmdb_popularity",       limit: 24
+    t.integer  "runtime",             limit: 4
+    t.float    "letterboxd_rating",   limit: 24
+    t.float    "imdb_rating",         limit: 24
+    t.float    "tmdb_rating",         limit: 24
+    t.integer  "budget",              limit: 4
+    t.string   "language",            limit: 255
+    t.string   "country",             limit: 255
+    t.string   "certification",       limit: 255
+    t.integer  "metascore",           limit: 4
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.integer  "letterboxd_position", limit: 4
+    t.float    "tmdb_popularity",     limit: 24
   end
 
   add_index "movies", ["budget"], name: "index_movies_on_budget", using: :btree
@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(version: 20150508222125) do
   add_index "movies", ["imdb_id"], name: "index_movies_on_imdb_id", unique: true, using: :btree
   add_index "movies", ["imdb_rating"], name: "index_movies_on_imdb_rating", using: :btree
   add_index "movies", ["language"], name: "index_movies_on_language", using: :btree
-  add_index "movies", ["letterboxd_popularity"], name: "index_movies_on_letterboxd_popularity", using: :btree
+  add_index "movies", ["letterboxd_position"], name: "index_movies_on_letterboxd_position", using: :btree
   add_index "movies", ["letterboxd_rating"], name: "index_movies_on_letterboxd_rating", using: :btree
   add_index "movies", ["letterboxd_slug"], name: "index_movies_on_letterboxd_slug", unique: true, using: :btree
   add_index "movies", ["metascore"], name: "index_movies_on_metascore", using: :btree
@@ -90,14 +90,17 @@ ActiveRecord::Schema.define(version: 20150508222125) do
   add_index "movies", ["tmdb_rating"], name: "index_movies_on_tmdb_rating", using: :btree
 
   create_table "people", force: :cascade do |t|
-    t.string   "name",           limit: 255
-    t.string   "place_of_birth", limit: 255
+    t.string   "name",              limit: 255
+    t.string   "place_of_birth",    limit: 255
     t.date     "birthdate"
     t.date     "deathdate"
-    t.string   "image_url",      limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.string   "tmdb_profile_path", limit: 255
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.integer  "tmdb_id",           limit: 4
   end
+
+  add_index "people", ["tmdb_id"], name: "index_people_on_tmdb_id", unique: true, using: :btree
 
   create_table "relationships", force: :cascade do |t|
     t.integer  "follower_id", limit: 4
