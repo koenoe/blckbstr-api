@@ -9,7 +9,10 @@
       %input{ class: "form-control", placeholder: "Letterboxd username" }
 
     .div{ "select-last": true, "ng-repeat": "item in items track by $index" }
-      %input{ "ng-model": "item", id: "item-{{$index}}", class: "form-control input-{{$index}}" }
+      .form-group
+        %input{ "ng-model": "item", id: "item-{{$index}}", class: "form-control input-{{$index}}" }
+
+    .form-group
+      %btn{ class: "btn", "ng-click": "add()" } +
 
     %input{ type: "submit", class: "btn btn-primary", value: "Give me advice"}
-    %btn{ class: "btn", "ng-click": "add()" } +
