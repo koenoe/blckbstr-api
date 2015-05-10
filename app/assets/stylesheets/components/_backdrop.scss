@@ -1,41 +1,53 @@
 // backdrop
 .backdrop {
-	position: fixed;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	top: 0;
-	background-size: cover;
-	background-position: center top;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  background-size: cover;
+  background-position: center top;
 
-	&:before {
-		content: '';
-		background: #000;
-		opacity: 0.3;
-		position: absolute;
-		top: 0;
-		right: 0;
-		left: 0;
-		bottom: 0;
-	}
+  &:before {
+    content: '';
+    background: #000;
+    opacity: 0.3;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
 
-	&__info {
-		position: absolute;
-		bottom: 12px;
-		left: 12px;
-		color: #bbb;
-		//width: 100%;
-		font-size: $font-size-smaller;
+  &__credits {
+    position: absolute;
+    bottom: 12px;
+    //left: 12px;
+    color: #bbb;
+    width: 100%;
+    font-size: $font-size-smaller;
 
-		a {
-			color: #bbb;
-			text-decoration: underline;
-		}
-	}
+    a {
+      color: #bbb;
+      text-decoration: underline;
+    }
+  }
 
-	&__site-credits {
-		@extend .backdrop__info;
-		left: auto;
-		right: 12px;
-	}
+  &__still-credits {
+    padding-bottom: 1em;
+
+    @media (min-width: $screen-xs-max) {
+      position: absolute;
+      bottom: 0;
+      left: 12px;
+    }
+  }
+
+  &__site-credits {
+    @media (min-width: $screen-xs-max) {
+      position: absolute;
+      bottom: 0;
+      right: 12px;
+    }
+  }
 }
