@@ -17,7 +17,6 @@
 //= require angular-animate
 //= require angular-route
 //= require angular-sanitize
-//= require angular-preload-image
 //= require toastr
 //= require moment
 

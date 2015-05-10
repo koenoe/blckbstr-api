@@ -1,13 +1,8 @@
-class Movie
-  include ActiveModel::Model
+class Movie < ActiveRecord::Base
+  has_and_belongs_to_many :genres, join_table: 'movie_genres', class_name: 'Genre'
+  has_and_belongs_to_many :views, join_table: 'movie_views', class_name: 'User'
 
-  attr_accessor :title, :release_date, :imdb_id, :backdrop_path, :backdrop_base_url
-
-  def backdrop_url(size = 'original')
-    if self.backdrop_base_url.blank?
-      self.backdrop_base_url = 'http://image.tmdb.org/t/p/'
-    end
-    self.backdrop_base_url + size + self.backdrop_path
-  end
-
+  has_many :movie_roles, class_name: 'MovieRole'
+  has_many :roles, through: :movie_roles
+  has_many :people, through: :movie_roles
 end

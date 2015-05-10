@@ -38,3 +38,5 @@ config/secrets.yml
 blckbstr.sublime-project
 # Ignore application configuration
 /config/application.yml
+# Ignore database configuration
+/config/database.yml

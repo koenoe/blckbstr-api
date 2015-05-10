@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/koenoe/letterboxd-scraper.git
+  revision: 71ed21846105673130bff40b230270908f30d51d
+  specs:
+    letterboxd-scraper (0.1.0)
+      activemodel
+      nokogiri
+
+GIT
   remote: git://github.com/koenoe/themoviedb.git
   revision: 0b44da261aa9b6115cda7021015bf1e28d14027b
   specs:
@@ -58,17 +66,24 @@ GEM
       sass (>= 3.2.19)
     bower-rails (0.9.2)
     builder (3.2.2)
+    bullet (4.14.6)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.9.0)
     byebug (4.0.5)
       columnize (= 0.9.0)
     coderay (1.1.0)
     columnize (0.9.0)
     debug_inspector (0.0.2)
+    domain_name (0.5.24)
+      unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
     execjs (2.5.2)
     figaro (1.1.1)
       thor (~> 0.14)
     globalid (0.3.5)
       activesupport (>= 4.1.0)
+    habtm_generator (0.3)
+      activerecord
     haml (4.0.6)
       tilt
     haml-rails (0.9.0)
@@ -82,6 +97,8 @@ GEM
       haml (~> 4.0.0)
       nokogiri (~> 1.6.0)
       ruby_parser (~> 3.5)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     httparty (0.13.3)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
@@ -100,8 +117,13 @@ GEM
     minitest (5.6.1)
     multi_json (1.11.0)
     multi_xml (0.5.5)
+    mysql2 (0.3.18)
+    netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
+    omdb (1.0.4)
+      json
+      rest-client
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.6.0)
@@ -134,6 +156,10 @@ GEM
     raindrops (0.13.0)
     rake (10.4.2)
     rdoc (4.2.0)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 3.0)
+      netrc (~> 0.7)
     ruby_parser (3.6.6)
       sexp_processor (~> 4.1)
     sass (3.4.13)
@@ -162,10 +188,14 @@ GEM
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
     unicorn (4.9.0)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    uniform_notifier (1.9.0)
     web-console (2.1.2)
       activemodel (>= 4.0)
       binding_of_caller (>= 0.7.2)
@@ -179,10 +209,15 @@ DEPENDENCIES
   better_errors
   bootstrap-sass (~> 3.3.4)
   bower-rails (~> 0.9.2)
+  bullet
   byebug
   figaro
+  habtm_generator
   haml-rails (~> 0.9)
   jbuilder (~> 2.0)
+  letterboxd-scraper!
+  mysql2
+  omdb
   quiet_assets
   rails (~> 4.2)
   sass-rails (~> 5.0)
