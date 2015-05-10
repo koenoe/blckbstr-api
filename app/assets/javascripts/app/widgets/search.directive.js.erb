@@ -17,8 +17,15 @@
     return directive;
   }
 
-  function searchController() {
+  function searchController($scope) {
+    $scope.items = [];
+    $scope.newitem = '';
 
+    $scope.add = function() {
+      console.log('add');
+
+      $scope.items.push($scope.newitem);
+    }
   }
 
 })();
