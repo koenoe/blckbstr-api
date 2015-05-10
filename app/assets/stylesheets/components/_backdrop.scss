@@ -19,7 +19,6 @@
     bottom: 0;
   }
 
-<<<<<<< HEAD
   &__credits {
     position: absolute;
     bottom: 12px;
@@ -36,6 +35,12 @@
 
   &__still-credits {
     padding-bottom: 1em;
+    font-size: 0.9em;
+
+    a {
+      color: #fff;
+      text-decoration: underline;
+    }
 
     @media (min-width: $screen-xs-max) {
       position: absolute;
@@ -45,38 +50,19 @@
   }
 
   &__site-credits {
+    font-size: 0.75em;
+    &, a {
+      color: #bbb;
+    }
+    a {
+      text-decoration: underline;
+    }
+
     @media (min-width: $screen-xs-max) {
       position: absolute;
       bottom: 0;
       right: 12px;
     }
   }
-=======
-	&__info {
-		position: absolute;
-		bottom: 12px;
-		left: 12px;
-		font-size: 0.9em;
 
-		a {
-			color: #fff;
-			text-decoration: underline;
-		}
-	}
-
-	&__site-credits {
-		position: absolute;
-		bottom: 12px;
-		right: 12px;
-		font-size: 0.75em;
-
-
-		&, a {
-			color: #bbb;
-		}
-		a {
-			text-decoration: underline;
-		}
-	}
->>>>>>> f8d11159125d7e9bd99308049f7e40f16898f27d
 }
