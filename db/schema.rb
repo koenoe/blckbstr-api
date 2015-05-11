@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150509092921) do
+ActiveRecord::Schema.define(version: 20150510130459) do
 
   create_table "genres", force: :cascade do |t|
     t.string   "title",      limit: 255
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20150509092921) do
     t.datetime "updated_at",           null: false
   end
 
+  add_index "movie_roles", ["movie_id", "person_id", "role_id"], name: "movie_roles_index", unique: true, using: :btree
   add_index "movie_roles", ["movie_id"], name: "index_movie_roles_on_movie_id", using: :btree
   add_index "movie_roles", ["person_id"], name: "index_movie_roles_on_person_id", using: :btree
   add_index "movie_roles", ["role_id"], name: "index_movie_roles_on_role_id", using: :btree
