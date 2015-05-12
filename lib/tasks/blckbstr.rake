@@ -30,7 +30,7 @@ namespace :blckbstr do
         i = index + 1
 
         # Get film details of Letterboxd
-        letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+        letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film)
 
         # Save movie to our database
         save_movie(letterboxd_film[:tmdb_id], letterboxd_film[:slug], i)
@@ -47,9 +47,12 @@ namespace :blckbstr do
 
 end
 
-def save_movie(tmdb_id, letterboxd_slug, position = nil)
+def save_movie(letterboxd_film, position = nil)
   # Get tmdb movie details
-  tmdb_movie = Tmdb::Movie.detail(tmdb_id)
+  tmdb_movie = Tmdb::Movie.detail(letterboxd_film[:tmdb_id])
+  # Get omdb movie details
+  omdb_movie = Omdb::Api.new.fetch(tmdb_movie['title'])
+  omdb_movie = omdb_movie[:movie] unless omdb_movie[:movie].nil?
 
   # Set genres
   genres = []
@@ -59,10 +62,31 @@ def save_movie(tmdb_id, letterboxd_slug, position = nil)
   end
 
   # Save movie
-  movie = Movie.find_or_create_by(tmdb_id: tmdb_movie['id'], letterboxd_slug: letterboxd_slug)
-  movie.title = tmdb_movie['title']
-  movie.letterboxd_position = position unless position.nil?
-  movie.genres = genres
+  movie = Movie.find_or_create_by(tmdb_id: tmdb_movie['id'], letterboxd_slug: letterboxd_film[:slug])
+  unless tmdb_movie.nil?
+    movie.title = tmdb_movie['title']
+    movie.letterboxd_position = position unless position.nil?
+    movie.genres = genres
+    movie.budget = tmdb_movie['budget']
+    movie.imdb_id = tmdb_movie['imdb_id']
+    movie.tmdb_poster_path = tmdb_movie['poster_path']
+    movie.tmdb_backdrop_path = tmdb_movie['backdrop_path']
+    movie.tmdb_rating = tmdb_movie['vote_average']
+    movie.release_date = Date.parse(tmdb_movie['release_date'])
+    movie.runtime = tmdb_movie['runtime']
+    movie.plot = tmdb_movie['overview']
+    movie.tagline = tmdb_movie['tagline']
+    movie.tmdb_popularity = tmdb_movie['popularity']
+    movie.trailer_url = letterboxd_film[:trailer]
+    # NEED SERVICES HERE (habtm)
+  end
+  unless omdb_movie.nil?
+    movie.certification = omdb_movie.rated
+    movie.imdb_rating = omdb_movie.imdb_rating
+    movie.metascore = omdb_movie.metascore
+    movie.country = omdb_movie.country
+    # NEED LANGUAGES HERE (habtm)
+  end
   movie.save!
 
   # Get cast

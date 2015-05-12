@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150510130459) do
+ActiveRecord::Schema.define(version: 20150512190313) do
 
   create_table "genres", force: :cascade do |t|
     t.string   "title",      limit: 255
@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(version: 20150510130459) do
     t.datetime "updated_at",                        null: false
     t.integer  "letterboxd_position", limit: 4
     t.float    "tmdb_popularity",     limit: 24
+    t.string   "tmdb_poster_path",    limit: 255
+    t.string   "tagline",             limit: 255
   end
 
   add_index "movies", ["budget"], name: "index_movies_on_budget", using: :btree
