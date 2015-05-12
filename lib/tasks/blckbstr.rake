@@ -29,57 +29,14 @@ namespace :blckbstr do
       letterboxd_films.each_with_index do |letterboxd_film, index|
         i = index + 1
 
-        # Get film details
+        # Get film details of Letterboxd
         letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
-        tmdb_movie = Tmdb::Movie.detail(letterboxd_film[:tmdb_id])
 
-        # Get genres
-        genres = []
-        tmdb_movie['genres'].each do |item|
-          genre = Genre.find_by(tmdb_id: item['id'])
-          genres << genre
-        end
-
-        # Save movie
-        movie = Movie.find_or_create_by(tmdb_id: tmdb_movie['id'], letterboxd_slug: letterboxd_film[:slug])
-        movie.title = tmdb_movie['title']
-        movie.letterboxd_position = i
-        movie.genres = genres
-        movie.save!
-
-        # Get cast
-        tmdb_movie_cast = Tmdb::Movie.casts(tmdb_movie['id'])
-        tmdb_movie_crew = Tmdb::Movie.crew(tmdb_movie['id'])
-
-        # Save cast
-        actor_role = Role.find_by(title: 'Actor')
-        tmdb_movie_cast.each do |item|
-          person = Person.find_or_create_by(tmdb_id: item['id'])
-          person.name = item['name']
-          person.tmdb_profile_path = item['profile_path']
-          person.save!
-
-          MovieRole.find_or_create_by(person: person, movie: movie, role: actor_role)
-        end
-
-        # Save crew
-        tmdb_movie_crew.each do |item|
-
-          role = Role.find_by(title: 'Writer') if item['department'] == 'Writing' && item['job'] == 'Author'
-          role = Role.find_by(title: 'Director') if item['department'] == 'Directing' && item['job'] == 'Director'
-
-          next if role.nil?
-
-          person = Person.find_or_create_by(tmdb_id: item['id'])
-          person.name = item['name']
-          person.tmdb_profile_path = item['profile_path']
-          person.save!
-
-          MovieRole.find_or_create_by(person: person, movie: movie, role: role)
-        end
+        # Save movie to our database
+        save_movie(letterboxd_film[:tmdb_id], letterboxd_film[:slug], i)
 
         # Put all the unique ids in an array who are updated
-        tmdb_ids << tmdb_movie['id']
+        tmdb_ids << letterboxd_film[:tmdb_id]
       end
 
       # Reset position and popularity of all non popular movies
@@ -88,4 +45,54 @@ namespace :blckbstr do
 
   end
 
+end
+
+def save_movie(tmdb_id, letterboxd_slug, position = nil)
+  # Get tmdb movie details
+  tmdb_movie = Tmdb::Movie.detail(tmdb_id)
+
+  # Set genres
+  genres = []
+  tmdb_movie['genres'].each do |item|
+    genre = Genre.find_by(tmdb_id: item['id'])
+    genres << genre
+  end
+
+  # Save movie
+  movie = Movie.find_or_create_by(tmdb_id: tmdb_movie['id'], letterboxd_slug: letterboxd_slug)
+  movie.title = tmdb_movie['title']
+  movie.letterboxd_position = position unless position.nil?
+  movie.genres = genres
+  movie.save!
+
+  # Get cast
+  tmdb_movie_cast = Tmdb::Movie.casts(tmdb_movie['id'])
+  tmdb_movie_crew = Tmdb::Movie.crew(tmdb_movie['id'])
+
+  # Save cast
+  actor_role = Role.find_by(title: 'Actor')
+  tmdb_movie_cast.each do |item|
+    person = Person.find_or_create_by(tmdb_id: item['id'])
+    person.name = item['name']
+    person.tmdb_profile_path = item['profile_path']
+    person.save!
+
+    MovieRole.find_or_create_by(person: person, movie: movie, role: actor_role)
+  end
+
+  # Save crew
+  tmdb_movie_crew.each do |item|
+
+    role = Role.find_by(title: 'Writer') if item['department'] == 'Writing' && (item['job'] == 'Author' || item['job'] == 'Screenplay')
+    role = Role.find_by(title: 'Director') if item['department'] == 'Directing' && item['job'] == 'Director'
+
+    next if role.nil?
+
+    person = Person.find_or_create_by(tmdb_id: item['id'])
+    person.name = item['name']
+    person.tmdb_profile_path = item['profile_path']
+    person.save!
+
+    MovieRole.find_or_create_by(person: person, movie: movie, role: role)
+  end
 end
