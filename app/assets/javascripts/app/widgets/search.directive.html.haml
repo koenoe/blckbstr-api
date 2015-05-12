@@ -6,11 +6,10 @@
     Fill in your or multiple Letterboxd users and we will give you custom advice.
   %form.center-block
     .form-group
-      %input{ class: "form-control", placeholder: "Letterboxd username" }
+      %input{ class: "form-control", placeholder: "Letterboxd username", "ng-model": "newitem" }
 
-    .div{ "select-last": true, "ng-repeat": "item in items track by $index" }
-      .form-group
-        %input{ "ng-model": "item", id: "item-{{$index}}", class: "form-control input-{{$index}}" }
+    %div{ "ng-repeat": "item in items" }
+      %input{ "ng-model": "item", id: "item-{{$index}}", class: "form-control input-{{$index}}" }
 
     .form-group
       %btn{ class: "btn", "ng-click": "add()" } +
