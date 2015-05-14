@@ -23,7 +23,7 @@ $use-fadeOutRightBig  : false !default;
 
 
 // Bounce Enter
-$use-bounceIn     : false !default;
+$use-bounceIn     : true !default;
 $use-bounceInUp     :   false !default;
 $use-bounceInDown     :   false !default;
 $use-bounceInLeft     :   false !default;
@@ -31,7 +31,7 @@ $use-bounceInRight    :   false !default;
 
 
 // Bounce Exit
-$use-bounceOut      : false !default;
+$use-bounceOut      : true !default;
 $use-bounceOutUp    :   false !default;
 $use-bounceOutDown    :   false !default;
 $use-bounceOutLeft    :   false !default;

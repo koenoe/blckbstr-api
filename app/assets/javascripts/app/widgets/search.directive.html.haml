@@ -1,4 +1,4 @@
-%div{ class: "search-box" }
+%div{ class: "search-box", "ng-init": "addUsernameField()" }
   %h1 Welcome
   %p
     Don't you have a clue which movie to watch next?
@@ -6,12 +6,12 @@
     Fill in your or multiple Letterboxd users and we will give you custom advice.
 
   %form.center-block
-    %div{ "ng-repeat": "item in items track by $index" }
+    %div{ "ng-repeat": "username in usernames track by $index", class: "animated bounceIn" }
       .form-group
-        %input{ "ng-model": "items[$index]", id: "item-{{$index}}", class: "form-control", "placeholder": "Your Letterboxd username" }
-        %btn{ class: "btn btn-remove", "ng-click": "remove($index)", "ng-if": "!$first" } -
+        %input{ "ng-model": "usernames[$index]", class: "form-control", "placeholder": "Letterboxd username" }
+        %btn{ class: "btn btn-remove", "ng-click": "remove($index)", "ng-if": "usernames.length > 1" } -
 
     .form-group
-      %btn{ class: "btn", "ng-click": "addField()", "ng-if": "items.length < 4" } +
+      %btn{ class: "btn", "ng-click": "addUsernameField()", "ng-if": "usernames.length < 4" } +
 
     %input{ type: "submit", class: "btn btn-primary", value: "Give me advice"}
