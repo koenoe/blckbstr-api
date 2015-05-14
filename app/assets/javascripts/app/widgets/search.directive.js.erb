@@ -18,15 +18,21 @@
   }
 
   function searchController($scope) {
-    $scope.items = [];
-    $scope.newitem = '';
+    // create empty input field
+    $scope.items = [''];
 
-    $scope.add = function() {
-      console.log('add');
+    $scope.addField = function() {
 
-      $scope.items.push($scope.newitem);
+      if($scope.items.indexOf($scope.newitem) > -1 || $scope.items.length > 3 || $scope.newitem === '' ) {
+        return;
+      }
 
-      console.log($scope.items);
+      // push username to array with usernames
+      $scope.items.push('');
+    }
+
+    $scope.remove = function(index) {
+      $scope.items.splice(index, 1);
     }
   }
 

@@ -4,14 +4,14 @@
     Don't you have a clue which movie to watch next?
     %br
     Fill in your or multiple Letterboxd users and we will give you custom advice.
+
   %form.center-block
-    .form-group
-      %input{ class: "form-control", placeholder: "Letterboxd username", "ng-model": "newitem" }
+    %div{ "ng-repeat": "item in items track by $index" }
+      .form-group
+        %input{ "ng-model": "items[$index]", id: "item-{{$index}}", class: "form-control", "placeholder": "Your Letterboxd username" }
+        %btn{ class: "btn btn-remove", "ng-click": "remove($index)", "ng-if": "!$first" } -
 
-    %div{ "ng-repeat": "item in items" }
-      %input{ "ng-model": "item", id: "item-{{$index}}", class: "form-control input-{{$index}}" }
-
     .form-group
-      %btn{ class: "btn", "ng-click": "add()" } +
+      %btn{ class: "btn", "ng-click": "addField()", "ng-if": "items.length < 4" } +
 
     %input{ type: "submit", class: "btn btn-primary", value: "Give me advice"}
