@@ -10,3 +10,6 @@
 Role.find_or_create_by(title: 'Actor')
 Role.find_or_create_by(title: 'Director')
 Role.find_or_create_by(title: 'Writer')
+Role.find_or_create_by(title: 'Novel')
+Role.find_or_create_by(title: 'Screenplay')
+Role.find_or_create_by(title: 'Author')

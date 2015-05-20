@@ -107,7 +107,10 @@ def save_movie(letterboxd_film, position = nil)
   # Save crew
   tmdb_movie_crew.each do |item|
 
-    role = Role.find_by(title: 'Writer') if item['department'] == 'Writing' && (item['job'] == 'Author' || item['job'] == 'Screenplay')
+    role = Role.find_by(title: 'Novel') if item['department'] == 'Writing' && item['job'] == 'Novel'
+    role = Role.find_by(title: 'Screenplay') if item['department'] == 'Writing' && item['job'] == 'Screenplay'
+    role = Role.find_by(title: 'Author') if item['department'] == 'Writing' && item['job'] == 'Author'
+    role = Role.find_by(title: 'Writer') if item['department'] == 'Writing' && item['job'] == 'Writer'
     role = Role.find_by(title: 'Director') if item['department'] == 'Directing' && item['job'] == 'Director'
 
     next if role.nil?
