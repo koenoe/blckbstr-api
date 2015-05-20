@@ -1,5 +1,6 @@
 .btn {
   @include font-bold;
+  @include button-variant(#fff, transparent, transparent);
 
   border-width: 2px;
   outline: 0;
@@ -11,9 +12,5 @@
     color: #fff;
     background: $brand-primary;
     border: 0;
-
-    &:hover {
-      @include animate-prefixer(animation-name, pulse);
-    }
   }
 }
