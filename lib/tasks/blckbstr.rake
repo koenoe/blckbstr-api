@@ -33,7 +33,7 @@ namespace :blckbstr do
         letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film)
 
         # Save movie to our database
-        save_movie(letterboxd_film[:tmdb_id], letterboxd_film[:slug], i)
+        save_movie(letterboxd_film, i)
 
         # Put all the unique ids in an array who are updated
         tmdb_ids << letterboxd_film[:tmdb_id]
@@ -72,20 +72,26 @@ def save_movie(letterboxd_film, position = nil)
     movie.tmdb_poster_path = tmdb_movie['poster_path']
     movie.tmdb_backdrop_path = tmdb_movie['backdrop_path']
     movie.tmdb_rating = tmdb_movie['vote_average']
+    movie.tmdb_vote_count = tmdb_movie['vote_count']
     movie.release_date = Date.parse(tmdb_movie['release_date'])
     movie.runtime = tmdb_movie['runtime']
     movie.plot = tmdb_movie['overview']
     movie.tagline = tmdb_movie['tagline']
     movie.tmdb_popularity = tmdb_movie['popularity']
     movie.trailer_url = letterboxd_film[:trailer]
+    movie.letterboxd_rating = letterboxd_film[:average_rating]
     # NEED SERVICES HERE (habtm)
+    # NEED LANGUAGES HERE (habtm)
+    # NEED PRODUCTION COMPANIES HERE (habtm)
   end
   unless omdb_movie.nil?
     movie.certification = omdb_movie.rated
     movie.imdb_rating = omdb_movie.imdb_rating
+    movie.imdb_vote_count = omdb_movie.imdb_votes
     movie.metascore = omdb_movie.metascore
-    movie.country = omdb_movie.country
-    # NEED LANGUAGES HERE (habtm)
+    # movie.country = omdb_movie.country # split on comma
+    # NEED COUNTRIES HERE (habtm) # split on comma
+    # awards (oscar, nominations, wins) # strip from string
   end
   movie.save!
 
