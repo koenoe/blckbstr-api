@@ -1,7 +1,7 @@
 namespace :blckbstr do
 
-  desc "Fetch genres of TMDb"
-  task fetch_genres: :environment do
+  desc "Sync genres of TMDb"
+  task sync_genres: :environment do
 
     Tmdb::Api.key(ENV['tmdb_api_key'])
 
@@ -17,8 +17,8 @@ namespace :blckbstr do
 
   end
 
-  desc "Fetch popular movies of Letterboxd"
-  task fetch_movies: :environment do
+  desc "Sync popular movies of Letterboxd"
+  task sync_movies: :environment do
 
     Tmdb::Api.key(ENV['tmdb_api_key'])
 
@@ -30,7 +30,7 @@ namespace :blckbstr do
         i = index + 1
 
         # Get film details of Letterboxd
-        letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film)
+        letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
 
         # Save movie to our database
         save_movie(letterboxd_film, i)
@@ -51,7 +51,7 @@ def save_movie(letterboxd_film, position = nil)
   # Get tmdb movie details
   tmdb_movie = Tmdb::Movie.detail(letterboxd_film[:tmdb_id])
   # Get omdb movie details
-  omdb_movie = Omdb::Api.new.fetch(tmdb_movie['title'])
+  omdb_movie = Omdb::Api.new.fetch(tmdb_movie['title'], letterboxd_film[:release_year])
   omdb_movie = omdb_movie[:movie] unless omdb_movie[:movie].nil?
 
   # Set genres
@@ -61,13 +61,55 @@ def save_movie(letterboxd_film, position = nil)
     genres << genre
   end
 
+  # Set languages
+  languages = []
+  tmdb_movie['spoken_languages'].each do |item|
+    language = Language.find_or_create_by(code: item['iso_639_1'])
+    language.title = item['name']
+    language.save!
+
+    languages << language
+  end
+
+  # Set countries
+  countries = []
+  tmdb_movie['production_countries'].each do |item|
+    country = Country.find_or_create_by(code: item['iso_3166_1'])
+    country.title = item['name']
+    country.save!
+
+    countries << country
+  end
+
+  # Set companies
+  companies = []
+  tmdb_movie['production_companies'].each do |item|
+    company = Company.find_or_create_by(tmdb_id: item['id'])
+    company.title = item['name']
+    company.save!
+
+    companies << company
+  end
+
+  # Set services
+  services = []
+  letterboxd_film[:availability].each do |key, value|
+    service = Service.find_by(slug: key.to_s) if value == true
+    services << service unless service.nil?
+  end
+
   # Save movie
   movie = Movie.find_or_create_by(tmdb_id: tmdb_movie['id'], letterboxd_slug: letterboxd_film[:slug])
   unless tmdb_movie.nil?
     movie.title = tmdb_movie['title']
     movie.letterboxd_position = position unless position.nil?
     movie.genres = genres
+    movie.languages = languages
+    movie.companies = companies
+    movie.countries = countries
+    movie.services = services
     movie.budget = tmdb_movie['budget']
+    movie.revenue = tmdb_movie['revenue']
     movie.imdb_id = tmdb_movie['imdb_id']
     movie.tmdb_poster_path = tmdb_movie['poster_path']
     movie.tmdb_backdrop_path = tmdb_movie['backdrop_path']
@@ -80,18 +122,44 @@ def save_movie(letterboxd_film, position = nil)
     movie.tmdb_popularity = tmdb_movie['popularity']
     movie.trailer_url = letterboxd_film[:trailer]
     movie.letterboxd_rating = letterboxd_film[:average_rating]
-    # NEED SERVICES HERE (habtm)
-    # NEED LANGUAGES HERE (habtm)
-    # NEED PRODUCTION COMPANIES HERE (habtm)
+    movie.letterboxd_vote_count = letterboxd_film[:vote_count]
   end
   unless omdb_movie.nil?
     movie.certification = omdb_movie.rated
     movie.imdb_rating = omdb_movie.imdb_rating
     movie.imdb_vote_count = omdb_movie.imdb_votes
     movie.metascore = omdb_movie.metascore
-    # movie.country = omdb_movie.country # split on comma
-    # NEED COUNTRIES HERE (habtm) # split on comma
-    # awards (oscar, nominations, wins) # strip from string
+
+    # Parse awards and prices
+    omdb_movie_awards = omdb_movie.awards.downcase
+    include_oscars = true if omdb_movie_awards.include? 'oscar'
+    include_nominations = true if omdb_movie_awards.include? 'nomination'
+    include_wins = true if omdb_movie_awards.include? 'win'
+
+    if include_oscars || include_wins || include_nominations
+      if include_oscars
+        awards = omdb_movie_awards.split('.')
+        # get number of oscars
+        oscars = awards.first.downcase
+        if oscars.include? 'won'
+          movie.oscars = oscars.scan( /\d+/ ).first
+        end
+      end
+      if include_wins && include_nominations
+        if awards.nil?
+          awards = omdb_movie_awards
+        else
+          awards = awards.last
+        end
+        # get number of wins and nominations
+        wins_nominations = awards.split('&')
+        movie.wins = wins_nominations.first.scan( /\d+/ ).first
+        movie.nominations = wins_nominations.last.scan( /\d+/ ).first
+      elsif include_nominations
+        movie.nominations = omdb_movie.awards.scan( /\d+/ ).first
+      end
+    end
+
   end
   movie.save!
 

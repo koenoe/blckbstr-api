@@ -11,7 +11,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150512190313) do
+ActiveRecord::Schema.define(version: 20150522134016) do
+
+  create_table "companies", force: :cascade do |t|
+    t.integer  "tmdb_id",    limit: 4
+    t.string   "title",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "companies", ["tmdb_id"], name: "index_companies_on_tmdb_id", unique: true, using: :btree
+
+  create_table "countries", force: :cascade do |t|
+    t.string   "title",      limit: 255
+    t.string   "code",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "countries", ["code"], name: "index_countries_on_code", unique: true, using: :btree
 
   create_table "genres", force: :cascade do |t|
     t.string   "title",      limit: 255
@@ -23,6 +41,29 @@ ActiveRecord::Schema.define(version: 20150512190313) do
   add_index "genres", ["title"], name: "index_genres_on_title", using: :btree
   add_index "genres", ["tmdb_id"], name: "index_genres_on_tmdb_id", unique: true, using: :btree
 
+  create_table "languages", force: :cascade do |t|
+    t.string   "title",      limit: 255
+    t.string   "code",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "languages", ["code"], name: "index_languages_on_code", unique: true, using: :btree
+
+  create_table "movie_companies", id: false, force: :cascade do |t|
+    t.integer "company_id", limit: 4
+    t.integer "movie_id",   limit: 4
+  end
+
+  add_index "movie_companies", ["company_id", "movie_id"], name: "movie_companies_index", unique: true, using: :btree
+
+  create_table "movie_countries", id: false, force: :cascade do |t|
+    t.integer "country_id", limit: 4
+    t.integer "movie_id",   limit: 4
+  end
+
+  add_index "movie_countries", ["country_id", "movie_id"], name: "movie_countries_index", unique: true, using: :btree
+
   create_table "movie_genres", id: false, force: :cascade do |t|
     t.integer "genre_id", limit: 4
     t.integer "movie_id", limit: 4
@@ -30,18 +71,33 @@ ActiveRecord::Schema.define(version: 20150512190313) do
 
   add_index "movie_genres", ["genre_id", "movie_id"], name: "movie_genres_index", unique: true, using: :btree
 
+  create_table "movie_languages", id: false, force: :cascade do |t|
+    t.integer "language_id", limit: 4
+    t.integer "movie_id",    limit: 4
+  end
+
+  add_index "movie_languages", ["language_id", "movie_id"], name: "movie_languages_index", unique: true, using: :btree
+
   create_table "movie_roles", force: :cascade do |t|
     t.integer  "movie_id",   limit: 4
     t.integer  "person_id",  limit: 4
     t.integer  "role_id",    limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.string   "character",  limit: 255
   end
 
   add_index "movie_roles", ["movie_id", "person_id", "role_id"], name: "movie_roles_index", unique: true, using: :btree
   add_index "movie_roles", ["movie_id"], name: "index_movie_roles_on_movie_id", using: :btree
   add_index "movie_roles", ["person_id"], name: "index_movie_roles_on_person_id", using: :btree
   add_index "movie_roles", ["role_id"], name: "index_movie_roles_on_role_id", using: :btree
+
+  create_table "movie_services", id: false, force: :cascade do |t|
+    t.integer "service_id", limit: 4
+    t.integer "movie_id",   limit: 4
+  end
+
+  add_index "movie_services", ["service_id", "movie_id"], name: "movie_services_index", unique: true, using: :btree
 
   create_table "movie_views", id: false, force: :cascade do |t|
     t.integer "movie_id", limit: 4
@@ -51,37 +107,40 @@ ActiveRecord::Schema.define(version: 20150512190313) do
   add_index "movie_views", ["movie_id", "user_id"], name: "movie_views_index", unique: true, using: :btree
 
   create_table "movies", force: :cascade do |t|
-    t.string   "title",               limit: 255
-    t.string   "tmdb_id",             limit: 255
-    t.string   "imdb_id",             limit: 255
-    t.string   "letterboxd_slug",     limit: 255
-    t.string   "tmdb_backdrop_path",  limit: 255
-    t.text     "plot",                limit: 65535
-    t.string   "trailer_url",         limit: 255
+    t.string   "title",                 limit: 255
+    t.string   "tmdb_id",               limit: 255
+    t.string   "imdb_id",               limit: 255
+    t.string   "letterboxd_slug",       limit: 255
+    t.string   "tmdb_backdrop_path",    limit: 255
+    t.text     "plot",                  limit: 65535
+    t.string   "trailer_url",           limit: 255
     t.date     "release_date"
-    t.integer  "runtime",             limit: 4
-    t.float    "letterboxd_rating",   limit: 24
-    t.float    "imdb_rating",         limit: 24
-    t.float    "tmdb_rating",         limit: 24
-    t.integer  "budget",              limit: 4
-    t.string   "language",            limit: 255
-    t.string   "country",             limit: 255
-    t.string   "certification",       limit: 255
-    t.integer  "metascore",           limit: 4
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
-    t.integer  "letterboxd_position", limit: 4
-    t.float    "tmdb_popularity",     limit: 24
-    t.string   "tmdb_poster_path",    limit: 255
-    t.string   "tagline",             limit: 255
+    t.integer  "runtime",               limit: 4
+    t.float    "letterboxd_rating",     limit: 24
+    t.float    "imdb_rating",           limit: 24
+    t.float    "tmdb_rating",           limit: 24
+    t.integer  "budget",                limit: 4
+    t.string   "certification",         limit: 255
+    t.integer  "metascore",             limit: 4
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.integer  "letterboxd_position",   limit: 4
+    t.float    "tmdb_popularity",       limit: 24
+    t.string   "tmdb_poster_path",      limit: 255
+    t.string   "tagline",               limit: 255
+    t.integer  "tmdb_vote_count",       limit: 4
+    t.integer  "imdb_vote_count",       limit: 4
+    t.integer  "letterboxd_vote_count", limit: 4
+    t.integer  "revenue",               limit: 4
+    t.integer  "oscars",                limit: 4
+    t.integer  "wins",                  limit: 4
+    t.integer  "nominations",           limit: 4
   end
 
   add_index "movies", ["budget"], name: "index_movies_on_budget", using: :btree
   add_index "movies", ["certification"], name: "index_movies_on_certification", using: :btree
-  add_index "movies", ["country"], name: "index_movies_on_country", using: :btree
   add_index "movies", ["imdb_id"], name: "index_movies_on_imdb_id", unique: true, using: :btree
   add_index "movies", ["imdb_rating"], name: "index_movies_on_imdb_rating", using: :btree
-  add_index "movies", ["language"], name: "index_movies_on_language", using: :btree
   add_index "movies", ["letterboxd_position"], name: "index_movies_on_letterboxd_position", using: :btree
   add_index "movies", ["letterboxd_rating"], name: "index_movies_on_letterboxd_rating", using: :btree
   add_index "movies", ["letterboxd_slug"], name: "index_movies_on_letterboxd_slug", unique: true, using: :btree
@@ -123,6 +182,15 @@ ActiveRecord::Schema.define(version: 20150512190313) do
   end
 
   add_index "roles", ["title"], name: "index_roles_on_title", using: :btree
+
+  create_table "services", force: :cascade do |t|
+    t.string   "title",      limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.string   "slug",       limit: 255
+  end
+
+  add_index "services", ["slug"], name: "index_services_on_slug", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "letterboxd_username", limit: 255
