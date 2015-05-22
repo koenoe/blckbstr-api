@@ -17,9 +17,74 @@ namespace :blckbstr do
 
   end
 
+  desc "Sync users"
+  task sync_users: :environment do
+    Tmdb::Api.key(ENV['tmdb_api_key'])
+
+    User.needs_to_sync.each do |user|
+
+      # First update sync status
+      # user.sync_status = User.sync_statuses[:syncing]
+      # user.save!
+
+      # Fetch watchlist
+      watchlist = Letterboxd::Scraper.fetch_watchlist(user.letterboxd_username)
+      watchlist.each do |letterboxd_film|
+        movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+        if movie.nil?
+          # Get film details of Letterboxd
+          letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+          # Save movie to our database
+          movie = save_movie(letterboxd_film)
+        end
+
+        user.watchlist << movie unless user.watchlist.exists?(id: movie.id)
+      end
+
+      # # Fetch seen
+      # seen = Letterboxd::Scraper.fetch_seen(user.letterboxd_username)
+      # seen.each do |letterboxd_film|
+      #   movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+      #   if movie.nil?
+      #     # Get film details of Letterboxd
+      #     letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+      #     # Save movie to our database
+      #     movie = save_movie(letterboxd_film)
+      #   end
+
+      #   user.movies_seen << movie unless user.movies_seen.exists?(id: movie.id)
+      # end
+
+      # # Fetch followers and following
+      # followers = Letterboxd::Scraper.fetch_followers(user.letterboxd_username)
+      # following = Letterboxd::Scraper.fetch_following(user.letterboxd_username)
+
+      # followers.each do |letterboxd_user|
+      #   follower = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
+      #   follower.name = letterboxd_user[:name]
+      #   follower.sync_status = User.sync_statuses[:needs_to_sync] if follower.sync_status.nil?
+      #   follower.follow(user) unless follower.following?(user)
+      #   follower.save!
+      # end
+
+      # following.each do |letterboxd_user|
+      #   following = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
+      #   following.name = letterboxd_user[:name]
+      #   following.sync_status = User.sync_statuses[:needs_to_sync] if following.sync_status.nil?
+      #   following.save!
+
+      #   user.follow(following) unless user.following?(following)
+      # end
+
+      user.save!
+
+    end
+  end
+
   desc "Sync popular movies of Letterboxd"
   task sync_movies: :environment do
-
     Tmdb::Api.key(ENV['tmdb_api_key'])
 
     letterboxd_films = Letterboxd::Scraper.fetch_popular(1)
@@ -161,7 +226,6 @@ def save_movie(letterboxd_film, position = nil)
     end
 
   end
-  movie.save!
 
   # Get cast
   tmdb_movie_cast = Tmdb::Movie.casts(tmdb_movie['id'])
@@ -170,12 +234,15 @@ def save_movie(letterboxd_film, position = nil)
   # Save cast
   actor_role = Role.find_by(title: 'Actor')
   tmdb_movie_cast.each do |item|
+
     person = Person.find_or_create_by(tmdb_id: item['id'])
     person.name = item['name']
     person.tmdb_profile_path = item['profile_path']
     person.save!
 
-    MovieRole.find_or_create_by(person: person, movie: movie, role: actor_role)
+    movie_role = MovieRole.find_or_create_by(person: person, movie: movie, role: actor_role)
+    movie_role.character = item['character']
+    movie_role.save!
   end
 
   # Save crew
@@ -196,4 +263,7 @@ def save_movie(letterboxd_film, position = nil)
 
     MovieRole.find_or_create_by(person: person, movie: movie, role: role)
   end
+
+  movie.save!
+  movie
 end

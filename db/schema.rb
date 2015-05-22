@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150522134016) do
+ActiveRecord::Schema.define(version: 20150522140507) do
 
   create_table "companies", force: :cascade do |t|
     t.integer  "tmdb_id",    limit: 4
@@ -200,11 +200,13 @@ ActiveRecord::Schema.define(version: 20150522134016) do
     t.string   "email",               limit: 255
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
+    t.integer  "sync_status",         limit: 4
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["imdb_username"], name: "index_users_on_imdb_username", unique: true, using: :btree
   add_index "users", ["letterboxd_username"], name: "index_users_on_letterboxd_username", unique: true, using: :btree
+  add_index "users", ["sync_status"], name: "index_users_on_sync_status", using: :btree
   add_index "users", ["tmdb_username"], name: "index_users_on_tmdb_username", unique: true, using: :btree
 
   create_table "watchlists", id: false, force: :cascade do |t|
