@@ -22,13 +22,11 @@
 
     // create empty username field
     $scope.addUsernameField = function() {
-      console.log($scope.usernames);
       $scope.usernames.push('');
     }
 
     // remove username
     $scope.remove = function(index) {
-      console.log(index);
       $scope.usernames.splice(index, 1);
     }
   }
