@@ -1,8 +1,25 @@
 .movie {
-  @extend .backdrop;
 
-  position: absolute;
-  background-image: url(https://image.tmdb.org/t/p/original/9X3cDZb4GYGQeOnZHLwMcCFz2Ro.jpg);
+  &__backdrop {
+    @extend .backdrop;
+
+    position: absolute;
+    background-image: url(https://image.tmdb.org/t/p/original/9X3cDZb4GYGQeOnZHLwMcCFz2Ro.jpg);
+    height: 80%;
+    box-shadow: inset 0 -100px 175px 0 rgba(#000,0.75);
+    z-index: -1;
+
+    &:before {
+      opacity: 0.5;
+    }
+  }
+
+  // todo
+  .container {
+    > .row {
+      margin-top: 30px;
+    }
+  }
 }
 
 .movie-header {
@@ -10,6 +27,10 @@
   border-bottom: 1px solid rgba(#fff, 0.4);
   padding-bottom: $grid-gutter-width;
   margin-bottom: $grid-gutter-width;
+
+  h1 {
+    display: inline-block;
+  }
 }
 
 h2,
