@@ -1,63 +1,104 @@
-.container
-  .row
-    .col-lg-6
-      %h1 Ex Machina
-      (2015)
-    .col-lg-6
-      8.0
-
-  .row
-    .col-lg-2
-      .poster
-        %img{src: 'https://image.tmdb.org/t/p/w396/iXWt1prw5xbpjf3hmOm8Fo3dFa.jpg'}
-    .col-lg-10
-      %p{class: 'tagline'} There Is Nothing More Human Than The Will To Survive
-      %p{class: 'overview'}
-        Caleb, a 24 year old coder at the world's largest internet company, wins a competition to spend a week at a private mountain retreat belonging to Nathan, the reclusive CEO of the company. But when Caleb arrives at the remote location he finds that he will have to participate in a strange and fascinating experiment in which he must interact with the world's first true artificial intelligence, housed in the body of a beautiful robot girl.
-
+.movie
+  .container
+    .movie-header
       .row
-        .col-md-6
-          %strong Runtime
-          108 minutes
-        .col-md-6.text-right
-          .btn.btn-secondary Science ficton
-          .btn.btn-secondary Drama
+        .col-lg-6
+          %h1 Ex Machina
+          (2015)
+          .p Directed by Alex Garland
+        .col-lg-6
+          .rating
+            8.0
 
-  .row
-    .col-xs-6.col-md-3
-      %h2 Cast &amp; Crew
-      Director
-      .br
-      Alex Garland
-    .col-xs-6.col-md-3
-      .castitem
-        %img{src: 'https://image.tmdb.org/t/p/w396/8mgGT0ydyBlo0mDX59VMO3e13IW.jpg'}
-    .col-xs-6.col-md-3
-      .castitem
-        %img{src: 'https://image.tmdb.org/t/p/w396/659AARwEB0xDNdQOr8exRXGk3jA.jpg'}
-    .col-xs-6.col-md-3
-      .castitem
-        %img{src: 'https://image.tmdb.org/t/p/w396/5dAYYV83K3cvsjFqHLbruV3GBmx.jpg'}
+    .row
+      .col-lg-2
+        .poster
+          %img{src: 'https://image.tmdb.org/t/p/w396/iXWt1prw5xbpjf3hmOm8Fo3dFa.jpg'}
+      .col-lg-10
+        %p{class: 'tagline'} There Is Nothing More Human Than The Will To Survive
+        %p{class: 'overview'}
+          Caleb, a 24 year old coder at the world's largest internet company, wins a competition to spend a week at a private mountain retreat belonging to Nathan, the reclusive CEO of the company. But when Caleb arrives at the remote location he finds that he will have to participate in a strange and fascinating experiment in which he must interact with the world's first true artificial intelligence, housed in the body of a beautiful robot girl.
 
+        .row
+          .col-md-6
+            %strong Runtime
+            108 minutes
+          .col-md-6.text-right
+            .btn.btn-secondary Science ficton
+            .btn.btn-secondary Drama
 
-  .row
-    .col-lg-3
-      .block-primary
-        %h2 Release Date
-        24 april 2015
-    .col-lg-3
-      .block-tertiary
-        %h2movie trailer
-    .col-lg-6
-      .fluid-video
-        %iframe{src: "//www.youtube.com/embed/EoQuVnKhxaM?rel=0&amp;showinfo=0&amp;controls=2&amp;html5=1"}
-  .row
-    .col-lg-9
-      oscars
-    .col-lg-3
-      awards &amp; prices
+    .row
+      .col-xs-6.col-md-3
+        .box.box-secondary
+          %h2 Cast &amp; Crew
+          Director
+          .br
+          Alex Garland
+          %btn{class: 'btn btn-secondary'} See full cast &amp; crew
+      .col-xs-6.col-md-3
+        .castitem
+          %img{src: 'https://image.tmdb.org/t/p/w396/8mgGT0ydyBlo0mDX59VMO3e13IW.jpg'}
+      .col-xs-6.col-md-3
+        .castitem
+          %img{src: 'https://image.tmdb.org/t/p/w396/659AARwEB0xDNdQOr8exRXGk3jA.jpg'}
+      .col-xs-6.col-md-3
+        .castitem
+          %img{src: 'https://image.tmdb.org/t/p/w396/5dAYYV83K3cvsjFqHLbruV3GBmx.jpg'}
 
-  .row
-    .col-xs-12
-      %h3 More information
-      buttons
+    .row
+      .col-lg-6
+        .row
+          .col-lg-6
+            .box.box-primary
+              %h2 Release Date
+              24 april 2015
+          .col-lg-6
+            .box.bubble-right
+              %h2 Movie trailer
+        .row
+          .col-lg-6
+            .box.box-tertiary
+              %h2 Country
+              United Kingdom
+          .col-lg-6
+            .box.box-secondary
+              %h2 Languages
+              en, es, fr
+      .col-lg-6
+        .fluid-video
+          %iframe{src: "//www.youtube.com/embed/EoQuVnKhxaM?rel=0&amp;showinfo=0&amp;controls=2&amp;html5=1"}
+
+    .row
+      .col-lg-9
+        .row
+          .col-xs-6.col-md-4
+            .box.text-center
+              .h1 4
+              oscars
+          .col-xs-6.col-md-4
+            .box.box-primary.text-center
+              .h1 3
+              wins
+          .col-xs-6.col-md-4
+            .box.box-secondary.text-center
+              .h1 8
+              nominations
+        .row
+          .col-lg-6
+            .box.box-secondary.text-center
+              %h4 Budget
+              .h2 $ 16,400,400
+          .col-lg-6
+            .box.box-tertiary.text-center
+              %h4 Revenue
+              .h2$ 13,700,000
+      .col-lg-3
+        .box.bubble-left
+          %h2 Awards &amp; Prices
+
+    .row
+      .col-xs-12.text-center
+        .h3 More information
+        .btn.btn-secondary More details at IMDb
+        .btn.btn-secondary More details at Letterboxd
+        .btn.btn-secondary More details at TMDb

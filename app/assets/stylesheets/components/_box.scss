@@ -1,0 +1,57 @@
+.box {
+  padding: $grid-gutter-width;
+  background: #383838;
+  //border-color: #383838;
+
+  h1,
+  .h1 {
+    margin-top: 0;
+  }
+
+  &.box-primary {
+    background: $brand-primary;
+    //border-color: $brand-primary;
+  }
+
+  &.box-secondary {
+    background: #161616;
+    //border-color: #161616;
+  }
+
+  &.box-tertiary {
+    background: #222;
+    //border-color: #222;
+  }
+
+  &.bubble-right {
+    &:after {
+      position: absolute;
+      content: '';
+      top: $grid-gutter-width;
+      right: 0;
+      width: $grid-gutter-width;
+      height: $grid-gutter-width;
+      background: inherit; // same as box background color
+      transform: rotate(45deg);
+
+      // position: absolute;
+      // content: '';
+      // top: 30px;
+      // right: -5px;
+      // bottom: auto;
+      // left: auto;
+      // border-width: 12px 0 12px 20px;
+      // border-color: transparent inherit;
+      // border-style: solid;
+      // display: block;
+    }
+  }
+
+  &.bubble-left {
+    &:after {
+      @extend .bubble-right;
+      left: 0;
+      right: auto;
+    }
+  }
+}

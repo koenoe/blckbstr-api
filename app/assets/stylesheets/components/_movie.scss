@@ -1,9 +1,23 @@
+.movie {
+  @extend .backdrop;
+
+  position: absolute;
+  background-image: url(https://image.tmdb.org/t/p/original/9X3cDZb4GYGQeOnZHLwMcCFz2Ro.jpg);
+}
+
+.movie-header {
+  padding-top: 84px;
+  border-bottom: 1px solid rgba(#fff, 0.4);
+  padding-bottom: $grid-gutter-width;
+  margin-bottom: $grid-gutter-width;
+}
+
 h2,
 .subtitle {
   max-width: 70%;
   border-bottom: 1px solid rgba(#fff, 0.4);
-  padding-bottom: 30px;
-  margin: 0 0 30px;
+  padding-bottom: $grid-gutter-width;
+  margin: 0 0 $grid-gutter-width;
   text-transform: uppercase;
 }
 

@@ -1,10 +1,14 @@
 .logo {
-	text-align: center;
-	padding-top: 40px;
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 10;
+  width: 100px;
+  height: 100px;
+  background: $brand-primary;
+  padding: 14px 24px;
 
   img {
-    max-width: 50px;
+    max-width: 100%;
   }
 }
