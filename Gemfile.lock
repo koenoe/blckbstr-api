@@ -1,10 +1,10 @@
 GIT
-  remote: git://github.com/koenoe/letterboxd-scraper.git
-  revision: 71ed21846105673130bff40b230270908f30d51d
+  remote: git://github.com/jvanbaarsen/omdb.git
+  revision: d345d7350f101a6053e5e677ff9c563ead7bab18
   specs:
-    letterboxd-scraper (0.1.0)
-      activemodel
-      nokogiri
+    omdb (1.0.4)
+      json
+      rest-client
 
 GIT
   remote: git://github.com/koenoe/themoviedb.git
@@ -12,6 +12,13 @@ GIT
   specs:
     themoviedb (0.1.0)
       httparty
+
+PATH
+  remote: ~/Projects/letterboxd-scraper
+  specs:
+    letterboxd-scraper (0.1.0)
+      activemodel
+      nokogiri
 
 GEM
   remote: https://rubygems.org/
@@ -121,9 +128,6 @@ GEM
     netrc (0.10.3)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
-    omdb (1.0.4)
-      json
-      rest-client
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.6.0)
@@ -217,7 +221,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   letterboxd-scraper!
   mysql2
-  omdb
+  omdb!
   quiet_assets
   rails (~> 4.2)
   sass-rails (~> 5.0)

@@ -10,3 +10,12 @@
 Role.find_or_create_by(title: 'Actor')
 Role.find_or_create_by(title: 'Director')
 Role.find_or_create_by(title: 'Writer')
+Role.find_or_create_by(title: 'Novel')
+Role.find_or_create_by(title: 'Screenplay')
+Role.find_or_create_by(title: 'Author')
+
+# Services
+Service.find_or_create_by(title: 'iTunes', slug: 'itunes')
+Service.find_or_create_by(title: 'Amazon', slug: 'amazon')
+Service.find_or_create_by(title: 'Disc', slug: 'disc')
+Service.find_or_create_by(title: 'Netflix', slug: 'netflix')

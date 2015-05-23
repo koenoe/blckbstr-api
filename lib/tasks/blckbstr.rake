@@ -1,7 +1,7 @@
 namespace :blckbstr do
 
-  desc "Fetch genres of TMDb"
-  task fetch_genres: :environment do
+  desc "Sync genres of TMDb"
+  task sync_genres: :environment do
 
     Tmdb::Api.key(ENV['tmdb_api_key'])
 
@@ -17,9 +17,74 @@ namespace :blckbstr do
 
   end
 
-  desc "Fetch popular movies of Letterboxd"
-  task fetch_movies: :environment do
+  desc "Sync users"
+  task sync_users: :environment do
+    Tmdb::Api.key(ENV['tmdb_api_key'])
 
+    User.needs_to_sync.each do |user|
+
+      # First update sync status
+      # user.sync_status = User.sync_statuses[:syncing]
+      # user.save!
+
+      # Fetch watchlist
+      watchlist = Letterboxd::Scraper.fetch_watchlist(user.letterboxd_username)
+      watchlist.each do |letterboxd_film|
+        movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+        if movie.nil?
+          # Get film details of Letterboxd
+          letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+          # Save movie to our database
+          movie = save_movie(letterboxd_film)
+        end
+
+        user.watchlist << movie unless user.watchlist.exists?(id: movie.id)
+      end
+
+      # # Fetch seen
+      # seen = Letterboxd::Scraper.fetch_seen(user.letterboxd_username)
+      # seen.each do |letterboxd_film|
+      #   movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+      #   if movie.nil?
+      #     # Get film details of Letterboxd
+      #     letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+      #     # Save movie to our database
+      #     movie = save_movie(letterboxd_film)
+      #   end
+
+      #   user.movies_seen << movie unless user.movies_seen.exists?(id: movie.id)
+      # end
+
+      # # Fetch followers and following
+      # followers = Letterboxd::Scraper.fetch_followers(user.letterboxd_username)
+      # following = Letterboxd::Scraper.fetch_following(user.letterboxd_username)
+
+      # followers.each do |letterboxd_user|
+      #   follower = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
+      #   follower.name = letterboxd_user[:name]
+      #   follower.sync_status = User.sync_statuses[:needs_to_sync] if follower.sync_status.nil?
+      #   follower.follow(user) unless follower.following?(user)
+      #   follower.save!
+      # end
+
+      # following.each do |letterboxd_user|
+      #   following = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
+      #   following.name = letterboxd_user[:name]
+      #   following.sync_status = User.sync_statuses[:needs_to_sync] if following.sync_status.nil?
+      #   following.save!
+
+      #   user.follow(following) unless user.following?(following)
+      # end
+
+      user.save!
+
+    end
+  end
+
+  desc "Sync popular movies of Letterboxd"
+  task sync_movies: :environment do
     Tmdb::Api.key(ENV['tmdb_api_key'])
 
     letterboxd_films = Letterboxd::Scraper.fetch_popular(1)
@@ -30,10 +95,10 @@ namespace :blckbstr do
         i = index + 1
 
         # Get film details of Letterboxd
-        letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film)
+        letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
 
         # Save movie to our database
-        save_movie(letterboxd_film[:tmdb_id], letterboxd_film[:slug], i)
+        save_movie(letterboxd_film, i)
 
         # Put all the unique ids in an array who are updated
         tmdb_ids << letterboxd_film[:tmdb_id]
@@ -51,7 +116,7 @@ def save_movie(letterboxd_film, position = nil)
   # Get tmdb movie details
   tmdb_movie = Tmdb::Movie.detail(letterboxd_film[:tmdb_id])
   # Get omdb movie details
-  omdb_movie = Omdb::Api.new.fetch(tmdb_movie['title'])
+  omdb_movie = Omdb::Api.new.fetch(tmdb_movie['title'], letterboxd_film[:release_year])
   omdb_movie = omdb_movie[:movie] unless omdb_movie[:movie].nil?
 
   # Set genres
@@ -61,33 +126,106 @@ def save_movie(letterboxd_film, position = nil)
     genres << genre
   end
 
+  # Set languages
+  languages = []
+  tmdb_movie['spoken_languages'].each do |item|
+    language = Language.find_or_create_by(code: item['iso_639_1'])
+    language.title = item['name']
+    language.save!
+
+    languages << language
+  end
+
+  # Set countries
+  countries = []
+  tmdb_movie['production_countries'].each do |item|
+    country = Country.find_or_create_by(code: item['iso_3166_1'])
+    country.title = item['name']
+    country.save!
+
+    countries << country
+  end
+
+  # Set companies
+  companies = []
+  tmdb_movie['production_companies'].each do |item|
+    company = Company.find_or_create_by(tmdb_id: item['id'])
+    company.title = item['name']
+    company.save!
+
+    companies << company
+  end
+
+  # Set services
+  services = []
+  letterboxd_film[:availability].each do |key, value|
+    service = Service.find_by(slug: key.to_s) if value == true
+    services << service unless service.nil?
+  end
+
   # Save movie
   movie = Movie.find_or_create_by(tmdb_id: tmdb_movie['id'], letterboxd_slug: letterboxd_film[:slug])
   unless tmdb_movie.nil?
     movie.title = tmdb_movie['title']
     movie.letterboxd_position = position unless position.nil?
     movie.genres = genres
+    movie.languages = languages
+    movie.companies = companies
+    movie.countries = countries
+    movie.services = services
     movie.budget = tmdb_movie['budget']
+    movie.revenue = tmdb_movie['revenue']
     movie.imdb_id = tmdb_movie['imdb_id']
     movie.tmdb_poster_path = tmdb_movie['poster_path']
     movie.tmdb_backdrop_path = tmdb_movie['backdrop_path']
     movie.tmdb_rating = tmdb_movie['vote_average']
+    movie.tmdb_vote_count = tmdb_movie['vote_count']
     movie.release_date = Date.parse(tmdb_movie['release_date'])
     movie.runtime = tmdb_movie['runtime']
     movie.plot = tmdb_movie['overview']
     movie.tagline = tmdb_movie['tagline']
     movie.tmdb_popularity = tmdb_movie['popularity']
     movie.trailer_url = letterboxd_film[:trailer]
-    # NEED SERVICES HERE (habtm)
+    movie.letterboxd_rating = letterboxd_film[:average_rating]
+    movie.letterboxd_vote_count = letterboxd_film[:vote_count]
   end
   unless omdb_movie.nil?
     movie.certification = omdb_movie.rated
     movie.imdb_rating = omdb_movie.imdb_rating
+    movie.imdb_vote_count = omdb_movie.imdb_votes
     movie.metascore = omdb_movie.metascore
-    movie.country = omdb_movie.country
-    # NEED LANGUAGES HERE (habtm)
+
+    # Parse awards and prices
+    omdb_movie_awards = omdb_movie.awards.downcase
+    include_oscars = true if omdb_movie_awards.include? 'oscar'
+    include_nominations = true if omdb_movie_awards.include? 'nomination'
+    include_wins = true if omdb_movie_awards.include? 'win'
+
+    if include_oscars || include_wins || include_nominations
+      if include_oscars
+        awards = omdb_movie_awards.split('.')
+        # get number of oscars
+        oscars = awards.first.downcase
+        if oscars.include? 'won'
+          movie.oscars = oscars.scan( /\d+/ ).first
+        end
+      end
+      if include_wins && include_nominations
+        if awards.nil?
+          awards = omdb_movie_awards
+        else
+          awards = awards.last
+        end
+        # get number of wins and nominations
+        wins_nominations = awards.split('&')
+        movie.wins = wins_nominations.first.scan( /\d+/ ).first
+        movie.nominations = wins_nominations.last.scan( /\d+/ ).first
+      elsif include_nominations
+        movie.nominations = omdb_movie.awards.scan( /\d+/ ).first
+      end
+    end
+
   end
-  movie.save!
 
   # Get cast
   tmdb_movie_cast = Tmdb::Movie.casts(tmdb_movie['id'])
@@ -96,18 +234,24 @@ def save_movie(letterboxd_film, position = nil)
   # Save cast
   actor_role = Role.find_by(title: 'Actor')
   tmdb_movie_cast.each do |item|
+
     person = Person.find_or_create_by(tmdb_id: item['id'])
     person.name = item['name']
     person.tmdb_profile_path = item['profile_path']
     person.save!
 
-    MovieRole.find_or_create_by(person: person, movie: movie, role: actor_role)
+    movie_role = MovieRole.find_or_create_by(person: person, movie: movie, role: actor_role)
+    movie_role.character = item['character']
+    movie_role.save!
   end
 
   # Save crew
   tmdb_movie_crew.each do |item|
 
-    role = Role.find_by(title: 'Writer') if item['department'] == 'Writing' && (item['job'] == 'Author' || item['job'] == 'Screenplay')
+    role = Role.find_by(title: 'Novel') if item['department'] == 'Writing' && item['job'] == 'Novel'
+    role = Role.find_by(title: 'Screenplay') if item['department'] == 'Writing' && item['job'] == 'Screenplay'
+    role = Role.find_by(title: 'Author') if item['department'] == 'Writing' && item['job'] == 'Author'
+    role = Role.find_by(title: 'Writer') if item['department'] == 'Writing' && item['job'] == 'Writer'
     role = Role.find_by(title: 'Director') if item['department'] == 'Directing' && item['job'] == 'Director'
 
     next if role.nil?
@@ -119,4 +263,7 @@ def save_movie(letterboxd_film, position = nil)
 
     MovieRole.find_or_create_by(person: person, movie: movie, role: role)
   end
+
+  movie.save!
+  movie
 end

@@ -7,6 +7,10 @@ class User < ActiveRecord::Base
   has_many :following, through: :active_relationships, source: :followed
   has_many :followers, through: :passive_relationships, source: :follower
 
+  enum sync_status: { needs_to_sync: 1, syncing: 2, synced: 3 }
+
+  scope :needs_to_sync, -> { where( sync_status: sync_statuses[:needs_to_sync]) }
+
   # Follows a user.
   def follow(other_user)
     active_relationships.create(followed_id: other_user.id)
