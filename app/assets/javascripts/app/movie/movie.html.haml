@@ -8,20 +8,37 @@
 
   .row
     .col-lg-2
-      plaat
+      .poster
+        %img{src: 'https://image.tmdb.org/t/p/w396/iXWt1prw5xbpjf3hmOm8Fo3dFa.jpg'}
     .col-lg-10
-      %p There Is Nothing More Human Than The Will To Survive
-      %p Caleb, a 24 year old...
+      %p{class: 'tagline'} There Is Nothing More Human Than The Will To Survive
+      %p{class: 'overview'}
+        Caleb, a 24 year old coder at the world's largest internet company, wins a competition to spend a week at a private mountain retreat belonging to Nathan, the reclusive CEO of the company. But when Caleb arrives at the remote location he finds that he will have to participate in a strange and fascinating experiment in which he must interact with the world's first true artificial intelligence, housed in the body of a beautiful robot girl.
+
+      .row
+        .col-md-6
+          %strong Runtime
+          108 minutes
+        .col-md-6.text-right
+          .btn.btn-secondary Science ficton
+          .btn.btn-secondary Drama
 
   .row
-    .col-lg-3
+    .col-xs-6.col-md-3
       %h2 Cast &amp; Crew
-    .col-lg-3
-      caleb 1
-    .col-lg-3
-      caleb 2
-    .col-lg-3
-      caleb 3
+      Director
+      .br
+      Alex Garland
+    .col-xs-6.col-md-3
+      .castitem
+        %img{src: 'https://image.tmdb.org/t/p/w396/8mgGT0ydyBlo0mDX59VMO3e13IW.jpg'}
+    .col-xs-6.col-md-3
+      .castitem
+        %img{src: 'https://image.tmdb.org/t/p/w396/659AARwEB0xDNdQOr8exRXGk3jA.jpg'}
+    .col-xs-6.col-md-3
+      .castitem
+        %img{src: 'https://image.tmdb.org/t/p/w396/5dAYYV83K3cvsjFqHLbruV3GBmx.jpg'}
+
 
   .row
     .col-lg-3
