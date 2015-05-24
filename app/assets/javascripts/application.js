@@ -35,7 +35,6 @@
 //= require app/core/config
 //= require app/core/dataservice
 
-//= require app/widgets/widgets.module
 //= require app/widgets/search.directive
 
 //= require app/home/home.module
