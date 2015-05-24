@@ -1,14 +1,20 @@
 .box {
-  //padding: $grid-gutter-width / 2;
   margin-top: $grid-gutter-width;
   background: #383838;
   position: relative;
 
+  &__header {
+    padding-bottom: $grid-gutter-width / 2;
+    margin: 0 0 $grid-gutter-width / 2;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(#fff, 0.4);
+  }
+
   &__content {
     background: inherit; // same as box bg color
     padding: $grid-gutter-width / 2;
-    padding-bottom: 9999px;
-    margin-bottom: -9999px;
+    padding-bottom: 999px;
+    margin-bottom: -999px;
 
     &:after {
       content: '';
@@ -17,9 +23,19 @@
     }
   }
 
-  h1,
-  .h1 {
-    margin-top: 0;
+  &__subtitle {
+    margin-bottom: 0;
+    text-transform: uppercase;
+    font-size: $font-size-base;
+  }
+
+  &__value {
+    @include font-bold;
+    margin: 0;
+  }
+
+  .btn {
+    margin-top: $grid-gutter-width;
   }
 
   &.box-primary {
