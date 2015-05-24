@@ -1,7 +1,7 @@
 .box {
-  padding: $grid-gutter-width;
+  padding: $grid-gutter-width / 2;
+  margin-bottom: $grid-gutter-width;
   background: #383838;
-  //border-color: #383838;
 
   h1,
   .h1 {
@@ -10,17 +10,14 @@
 
   &.box-primary {
     background: $brand-primary;
-    //border-color: $brand-primary;
   }
 
   &.box-secondary {
     background: #161616;
-    //border-color: #161616;
   }
 
   &.box-tertiary {
     background: #222;
-    //border-color: #222;
   }
 
   &.bubble-right {
@@ -31,6 +28,7 @@
       right: 0;
       width: $grid-gutter-width;
       height: $grid-gutter-width;
+      z-index: -1;
       background: inherit; // same as box background color
       transform: rotate(45deg);
 
