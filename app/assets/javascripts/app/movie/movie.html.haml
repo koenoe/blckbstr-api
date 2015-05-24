@@ -32,75 +32,90 @@
     .row
       .col-xs-6.col-md-3
         .box.box-secondary
-          %h2 Cast &amp; Crew
-          Director
-          .br
-          Alex Garland
-          %btn{class: 'btn btn-secondary'} See full cast &amp; crew
+          .box__content
+            %h2 Cast &amp; Crew
+            Director
+            .br
+            Alex Garland
+            %btn{class: 'btn btn-secondary'} See full cast &amp; crew
       .col-xs-6.col-md-3
-        .castitem
-          %img{src: 'https://image.tmdb.org/t/p/w396/8mgGT0ydyBlo0mDX59VMO3e13IW.jpg'}
-          .castitem__overlay
-            %span
-              Donhalm Gleeson
-              %br as Caleb
+        .box
+          .castitem
+            %img{src: 'https://image.tmdb.org/t/p/w396/8mgGT0ydyBlo0mDX59VMO3e13IW.jpg'}
+            .castitem__overlay
+              %span
+                Donhalm Gleeson
+                %br as Caleb
       .col-xs-6.col-md-3
-        .castitem
-          %img{src: 'https://image.tmdb.org/t/p/w396/659AARwEB0xDNdQOr8exRXGk3jA.jpg'}
+        .box
+          .castitem
+            %img{src: 'https://image.tmdb.org/t/p/w396/659AARwEB0xDNdQOr8exRXGk3jA.jpg'}
       .col-xs-6.col-md-3
-        .castitem
-          %img{src: 'https://image.tmdb.org/t/p/w396/5dAYYV83K3cvsjFqHLbruV3GBmx.jpg'}
+        .box
+          .castitem
+            %img{src: 'https://image.tmdb.org/t/p/w396/5dAYYV83K3cvsjFqHLbruV3GBmx.jpg'}
 
     .row
       .col-lg-6
         .row
           .col-lg-6
             .box.box-primary
-              %h2 Release Date
-              24 april 2015
+              .box__content
+                %h2 Release Date
+                24 april 2015
           .col-lg-6
             .box.bubble-right
-              %h2 Movie trailer
+              .box__content
+                %h2 Movie trailer
         .row
           .col-lg-6
             .box.box-tertiary
-              %h2 Country
-              United Kingdom
+              .box__content
+                %h2 Country
+                United Kingdom
           .col-lg-6
             .box.box-secondary
-              %h2 Languages
-              en, es, fr
+              .box__content
+                %h2 Languages
+                en, es, fr
       .col-lg-6
-        .fluid-video
-          %iframe{src: "//www.youtube.com/embed/EoQuVnKhxaM?rel=0&amp;showinfo=0&amp;controls=2&amp;html5=1"}
+        .box
+          .fluid-video
+            %iframe{src: "//www.youtube.com/embed/EoQuVnKhxaM?rel=0&amp;showinfo=0&amp;controls=2&amp;html5=1"}
 
     .row
       .col-lg-9
         .row
           .col-xs-6.col-md-4
             .box.text-center
-              .h1 4
-              oscars
+              .box__content
+                .h1 4
+                oscars
           .col-xs-6.col-md-4
             .box.box-primary.text-center
-              .h1 3
-              wins
+              .box__content
+                .h1 3
+                wins
           .col-xs-6.col-md-4
             .box.box-secondary.text-center
-              .h1 8
-              nominations
+              .box__content
+                .h1 8
+                nominations
         .row
           .col-lg-6
             .box.box-secondary.text-center
-              %h4 Budget
-              .h2 $ 16,400,400
+              .box__content
+                %h4 Budget
+                .h2 $ 16,400,400
           .col-lg-6
             .box.box-tertiary.text-center
-              %h4 Revenue
-              .h2$ 13,700,000
+              .box__content
+                %h4 Revenue
+                .h2$ 13,700,000
       .col-lg-3
         .box.bubble-left
-          %h2 Awards &amp; Prices
+          .box__content
+            %h2 Awards &amp; Prices
 
     .row
       .col-xs-12.text-center

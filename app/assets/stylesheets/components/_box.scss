@@ -1,7 +1,15 @@
 .box {
-  padding: $grid-gutter-width / 2;
-  margin-bottom: $grid-gutter-width;
+  //padding: $grid-gutter-width / 2;
+  margin-top: $grid-gutter-width;
   background: #383838;
+  position: relative;
+
+  &__content {
+    background: inherit; // same as box bg color
+    padding: $grid-gutter-width / 2;
+    padding-bottom: 9999px;
+    margin-bottom: -9999px;
+  }
 
   h1,
   .h1 {
@@ -24,31 +32,20 @@
     &:after {
       position: absolute;
       content: '';
-      top: $grid-gutter-width;
-      right: 0;
+      top: $grid-gutter-width * 2;
+      right: 10px;
       width: $grid-gutter-width;
       height: $grid-gutter-width;
       z-index: -1;
-      background: inherit; // same as box background color
+      background: inherit; // same as box bg color
       transform: rotate(45deg);
-
-      // position: absolute;
-      // content: '';
-      // top: 30px;
-      // right: -5px;
-      // bottom: auto;
-      // left: auto;
-      // border-width: 12px 0 12px 20px;
-      // border-color: transparent inherit;
-      // border-style: solid;
-      // display: block;
     }
   }
 
   &.bubble-left {
     &:after {
       @extend .bubble-right;
-      left: 0;
+      left: -10px;
       right: auto;
     }
   }

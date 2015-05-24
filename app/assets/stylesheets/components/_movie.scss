@@ -1,5 +1,9 @@
 .movie {
 
+  .row {
+    overflow: hidden;
+  }
+
   &__backdrop {
     @extend .backdrop;
 
