@@ -9,6 +9,12 @@
     padding: $grid-gutter-width / 2;
     padding-bottom: 9999px;
     margin-bottom: -9999px;
+
+    &:after {
+      content: '';
+      display: block;
+      padding-bottom: $grid-gutter-width / 2; // same as box__content padding;
+    }
   }
 
   h1,
@@ -32,8 +38,8 @@
     &:after {
       position: absolute;
       content: '';
-      top: $grid-gutter-width * 2;
-      right: 10px;
+      top: $grid-gutter-width;
+      right: -10px;
       width: $grid-gutter-width;
       height: $grid-gutter-width;
       z-index: -1;
