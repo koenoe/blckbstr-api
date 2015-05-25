@@ -1,11 +1,93 @@
 .rating {
+  $circle-size: 124px;
+  $circle-background: radial-gradient(#000000 88px, #877a81 96px, #eee7ef 97px, #18181c 99px);
+  $inset-size: 90px;
+  $inset-background: radial-gradient(#ffff54 2px, #ff0000 8px, #ff0000 12px, #8d0000 28px, #220000 74px, #000000 77px, #281d1c 80px, #000000 83px);
+  $transition-length: 1s;
+  $percentage-color: rgba(0,0,0,0.13);
+  $percentage-font-size: 22px;
+  $percentage-text-width: 57px;
+
+  width:  $circle-size;
+  height: $circle-size;
+
   border-radius: 50%;
-  border: 4px solid #fff;
-  font-size: $font-size-h2;
-  width: 110px;
-  height: 110px;
-  text-align: center;
-  padding-top: 20px;
-  font-weight: bold;
-  float: right;
+  .circle {
+    .mask, .fill {
+      width:    $circle-size;
+      height:   $circle-size;
+      position: absolute;
+
+      -webkit-backface-visibility: hidden;
+      transition: -webkit-transform $transition-length;
+      transition: -ms-transform $transition-length;
+      transition: transform $transition-length;
+      border-radius: 50%;
+    }
+    .mask {
+      clip: rect(0px, $circle-size, $circle-size, $circle-size/2);
+      .fill {
+        clip: rect(0px, $circle-size/2, $circle-size, 0px);
+        //background: $circle-background;
+        border: 6px solid #fff;
+      }
+    }
+  }
+  .inset {
+    width:       $circle-size;
+    height:      $circle-size;
+    position:    absolute;
+    //margin-left: ($circle-size - $inset-size)/2;
+    //margin-top:  ($circle-size - $inset-size)/2;
+    border:       6px solid rgba(#fff, 0.4);
+    //background: $inset-background;
+    border-radius: 50%;
+    .percentage {
+      @include font-bold;
+      font-size: $font-size-h2;
+      text-align: center;
+      padding-top: 30px;
+
+      .numbers {
+        margin-top: -$percentage-font-size;
+        transition: width $transition-length;
+        span {
+          width:          $percentage-text-width;
+          line-height:    1;
+          display:        inline-block;
+          vertical-align: top;
+
+          text-align:     center;
+          font-weight:    800;
+          font-size:      $percentage-font-size;
+          font-family:    "Lato", "Helvetica Neue", Helvetica, Arial, sans-serif;
+          color:          $percentage-color;
+        }
+      }
+    }
+  }
+
+  $i: 0;
+  $increment: 180deg / 100;
+
+  //.loop ($i) when ($i <= 100) {
+  @for $i from 1 through 100 {
+    &[data-progress="#{$i}"] {
+      .circle {
+        .mask.full, .fill {
+          -webkit-transform: rotate($increment * $i);
+          -ms-transform: rotate($increment * $i);
+          transform: rotate($increment * $i);
+        }
+        .fill.fix {
+          -webkit-transform: rotate($increment * $i * 2);
+          -ms-transform: rotate($increment * $i * 2);
+          transform: rotate($increment * $i * 2);
+        }
+      }
+      .inset .percentage .numbers {
+        width: $i * $percentage-text-width + $percentage-text-width;
+      }
+    }
+  }
 }

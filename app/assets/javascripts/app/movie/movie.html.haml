@@ -10,9 +10,25 @@
           .movie__subheader
             %btn{class: 'btn btn-secondary btn-sm'} PG-13
             %p Directed by Alex Garland
-        .col-lg-6
-          .rating
-            8.0
+        .col-lg-4
+          .pull-right
+            %ul{class: 'list-unstyled'}
+              %li Letterboxd - 5.320 votes
+              %li IMDb - 36.132 votes
+              %li TMDb - 9.956 votes
+              %li Metascore
+        .col-lg-2
+          .pull-right
+            .rating{'data-progress': '80'}
+              .circle
+                .mask.full
+                  .fill
+                .mask.half
+                  .fill
+                  .fill.fix
+              .inset
+                .percentage
+                  8.0
 
     .row
       .col-lg-2
