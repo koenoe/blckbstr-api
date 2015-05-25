@@ -24,17 +24,23 @@
   }
 
   &__subtitle {
+    color: #aaa;
     margin-bottom: 0;
     text-transform: uppercase;
     font-size: $font-size-base;
+
+    + .box__value {
+      margin: 10px 0;
+    }
   }
 
   &__value {
     @include font-bold;
+    line-height: 1;
     margin: 0;
   }
 
-  .btn {
+  &__footer {
     margin-top: $grid-gutter-width;
   }
 
