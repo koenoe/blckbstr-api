@@ -6,21 +6,6 @@ gem 'rails', '~> 4.2'
 # We use MYSQL for our database
 gem 'mysql2'
 
-# Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
-
-# Use Bootstrap for stylesheets
-gem 'bootstrap-sass', '~> 3.3.4'
-
-# Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
-
-# Use Haml
-gem 'haml-rails', '~> 0.9'
-
-# Use bower as package manager for our assets
-gem 'bower-rails', '~> 0.9.2'
-
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.0'
 

@@ -1,4 +1,4 @@
-class Api::V1::MoviesController < Api::V1::BaseController
+class MoviesController < ApplicationController
 
   def index
 
@@ -24,6 +24,7 @@ class Api::V1::MoviesController < Api::V1::BaseController
     matches = watchlists.inject(:&)
     letterboxd_film = matches.sample
 
+    # FIX ME
     letterboxd_film = nil # TESTING PURPOSES!!!
 
     if letterboxd_film.blank?
@@ -66,9 +67,9 @@ class Api::V1::MoviesController < Api::V1::BaseController
     render(
       json: {
         title: tmdb_movie['title'],
-        backdrop_url: @tmdb_config.base_url + 'original' + tmdb_movie['backdrop_path'],
-        release_year: Date.parse(tmdb_movie['release_date']).strftime('%Y'),
-        imdb_id: tmdb_movie['imdb_id']
+        backdropUrl: @tmdb_config.base_url + 'original' + tmdb_movie['backdrop_path'],
+        releaseYear: Date.parse(tmdb_movie['release_date']).strftime('%Y'),
+        imdbId: tmdb_movie['imdb_id']
       }
     )
   end
