@@ -8,10 +8,6 @@ Installation
 
     bundle install
 
-We use Bower for our front-end packages:
-
-    bundle exec rake bower:install
-
 Open 'config/secrets.yml.example' and save this file as 'config/secrets.yml'. In order to generate secret tokens use the following command:
 
     bundle exec rake secret
