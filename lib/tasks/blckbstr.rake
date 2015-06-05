@@ -30,6 +30,7 @@ namespace :blckbstr do
         user.save!
 
         # Fetch watchlist
+        user.watchlist = []
         watchlist = Letterboxd::Scraper.fetch_watchlist(user.letterboxd_username)
         watchlist.each do |letterboxd_film|
           movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
@@ -69,12 +70,11 @@ namespace :blckbstr do
 
             # Save movie to our database
             movie = save_movie(letterboxd_film)
-
-            # Save rating
-            rating = Rating.find_or_create_by(movie: movie, user: user)
-            rating.letterboxd_rating = 10
-            rating.save!
           end
+          # Save rating
+          rating = Rating.find_or_create_by(movie: movie, user: user)
+          rating.letterboxd_rating = 10
+          rating.save!
         end
 
         # Fetch liked
@@ -87,10 +87,9 @@ namespace :blckbstr do
 
             # Save movie to our database
             movie = save_movie(letterboxd_film)
-
-            # Save like
-            like = Like.find_or_create_by(likeable: movie, user:user)
           end
+          # Save like
+          like = Like.find_or_create_by(likeable: movie, user:user)
         end
 
 
@@ -101,7 +100,7 @@ namespace :blckbstr do
         followers.each do |letterboxd_user|
           follower = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
           follower.name = letterboxd_user[:name]
-          follower.sync_status = User.sync_statuses[:default] if follower.sync_status.nil?
+          follower.sync_status = User.sync_statuses[:needs_to_sync] if follower.sync_status.nil?
           follower.follow(user) unless follower.following?(user)
           follower.save!
         end
@@ -109,7 +108,7 @@ namespace :blckbstr do
         following.each do |letterboxd_user|
           following = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
           following.name = letterboxd_user[:name]
-          following.sync_status = User.sync_statuses[:default] if following.sync_status.nil?
+          following.sync_status = User.sync_statuses[:needs_to_sync] if following.sync_status.nil?
           following.save!
 
           user.follow(following) unless user.following?(following)
@@ -175,39 +174,47 @@ def save_movie(letterboxd_film, position = nil)
 
   # Set genres
   genres = []
-  tmdb_movie['genres'].each do |item|
-    genre = Genre.find_by(tmdb_id: item['id'])
-    genres << genre
+  unless tmdb_movie['genres'].nil?
+    tmdb_movie['genres'].each do |item|
+      genre = Genre.find_by(tmdb_id: item['id'])
+      genres << genre
+    end
   end
 
   # Set languages
   languages = []
-  tmdb_movie['spoken_languages'].each do |item|
-    language = Language.find_or_create_by(code: item['iso_639_1'])
-    language.title = item['name']
-    language.save!
+  unless tmdb_movie['spoken_languages'].nil?
+    tmdb_movie['spoken_languages'].each do |item|
+      language = Language.find_or_create_by(code: item['iso_639_1'])
+      language.title = item['name']
+      language.save!
 
-    languages << language
+      languages << language
+    end
   end
 
   # Set countries
   countries = []
-  tmdb_movie['production_countries'].each do |item|
-    country = Country.find_or_create_by(code: item['iso_3166_1'])
-    country.title = item['name']
-    country.save!
+  unless tmdb_movie['production_countries'].nil?
+    tmdb_movie['production_countries'].each do |item|
+      country = Country.find_or_create_by(code: item['iso_3166_1'])
+      country.title = item['name']
+      country.save!
 
-    countries << country
+      countries << country
+    end
   end
 
   # Set companies
   companies = []
-  tmdb_movie['production_companies'].each do |item|
-    company = Company.find_or_create_by(tmdb_id: item['id'])
-    company.title = item['name']
-    company.save!
+  unless tmdb_movie['production_companies'].nil?
+    tmdb_movie['production_companies'].each do |item|
+      company = Company.find_or_create_by(tmdb_id: item['id'])
+      company.title = item['name']
+      company.save!
 
-    companies << company
+      companies << company
+    end
   end
 
   # Set services
@@ -286,36 +293,40 @@ def save_movie(letterboxd_film, position = nil)
   tmdb_movie_crew = Tmdb::Movie.crew(tmdb_movie['id'])
 
   # Save cast
-  actor_role = Role.find_by(title: 'Actor')
-  tmdb_movie_cast.each do |item|
+  unless tmdb_movie_cast.nil?
+    actor_role = Role.find_by(title: 'Actor')
+    tmdb_movie_cast.each do |item|
 
-    person = Person.find_or_create_by(tmdb_id: item['id'])
-    person.name = item['name']
-    person.tmdb_profile_path = item['profile_path']
-    person.save!
+      person = Person.find_or_create_by(tmdb_id: item['id'])
+      person.name = item['name']
+      person.tmdb_profile_path = item['profile_path']
+      person.save!
 
-    movie_role = MovieRole.find_or_create_by(person: person, movie: movie, role: actor_role)
-    movie_role.character = item['character']
-    movie_role.save!
+      movie_role = MovieRole.find_or_create_by(person: person, movie: movie, role: actor_role)
+      movie_role.character = item['character']
+      movie_role.save!
+    end
   end
 
   # Save crew
-  tmdb_movie_crew.each do |item|
+  unless tmdb_movie_crew.nil?
+    tmdb_movie_crew.each do |item|
 
-    role = Role.find_by(title: 'Novel') if item['department'] == 'Writing' && item['job'] == 'Novel'
-    role = Role.find_by(title: 'Screenplay') if item['department'] == 'Writing' && item['job'] == 'Screenplay'
-    role = Role.find_by(title: 'Author') if item['department'] == 'Writing' && item['job'] == 'Author'
-    role = Role.find_by(title: 'Writer') if item['department'] == 'Writing' && item['job'] == 'Writer'
-    role = Role.find_by(title: 'Director') if item['department'] == 'Directing' && item['job'] == 'Director'
+      role = Role.find_by(title: 'Novel') if item['department'] == 'Writing' && item['job'] == 'Novel'
+      role = Role.find_by(title: 'Screenplay') if item['department'] == 'Writing' && item['job'] == 'Screenplay'
+      role = Role.find_by(title: 'Author') if item['department'] == 'Writing' && item['job'] == 'Author'
+      role = Role.find_by(title: 'Writer') if item['department'] == 'Writing' && item['job'] == 'Writer'
+      role = Role.find_by(title: 'Director') if item['department'] == 'Directing' && item['job'] == 'Director'
 
-    next if role.nil?
+      next if role.nil?
 
-    person = Person.find_or_create_by(tmdb_id: item['id'])
-    person.name = item['name']
-    person.tmdb_profile_path = item['profile_path']
-    person.save!
+      person = Person.find_or_create_by(tmdb_id: item['id'])
+      person.name = item['name']
+      person.tmdb_profile_path = item['profile_path']
+      person.save!
 
-    MovieRole.find_or_create_by(person: person, movie: movie, role: role)
+      MovieRole.find_or_create_by(person: person, movie: movie, role: role)
+    end
   end
 
   movie.save!

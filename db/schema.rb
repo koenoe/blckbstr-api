@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150605135433) do
+ActiveRecord::Schema.define(version: 20150605151612) do
 
   create_table "companies", force: :cascade do |t|
     t.integer  "tmdb_id",    limit: 4
@@ -93,9 +93,9 @@ ActiveRecord::Schema.define(version: 20150605135433) do
     t.integer  "movie_id",   limit: 4
     t.integer  "person_id",  limit: 4
     t.integer  "role_id",    limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.string   "character",  limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.text     "character",  limit: 65535
   end
 
   add_index "movie_roles", ["movie_id", "person_id", "role_id"], name: "movie_roles_index", unique: true, using: :btree
@@ -173,7 +173,7 @@ ActiveRecord::Schema.define(version: 20150605135433) do
     t.integer  "tmdb_id",           limit: 4
   end
 
-  add_index "people", ["tmdb_id"], name: "index_people_on_tmdb_id", using: :btree
+  add_index "people", ["tmdb_id"], name: "index_people_on_tmdb_id", unique: true, using: :btree
 
   create_table "ratings", force: :cascade do |t|
     t.integer  "user_id",           limit: 4

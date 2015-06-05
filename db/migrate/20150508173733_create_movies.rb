@@ -21,7 +21,7 @@ class CreateMovies < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    add_index :movies, :imdb_id, unique: true
+    add_index :movies, :imdb_id, unique: false
     add_index :movies, :tmdb_id, unique: true
     add_index :movies, :letterboxd_slug, unique: true
     add_index :movies, :release_date
