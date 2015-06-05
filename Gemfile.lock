@@ -7,18 +7,19 @@ GIT
       rest-client
 
 GIT
+  remote: git://github.com/koenoe/letterboxd-scraper.git
+  revision: 5a240d421cababb4d9350b38853dde67ddda1c47
+  specs:
+    letterboxd-scraper (0.1.0)
+      activemodel
+      nokogiri
+
+GIT
   remote: git://github.com/koenoe/themoviedb.git
   revision: 0b44da261aa9b6115cda7021015bf1e28d14027b
   specs:
     themoviedb (0.1.0)
       httparty
-
-PATH
-  remote: ~/Projects/letterboxd-scraper
-  specs:
-    letterboxd-scraper (0.1.0)
-      activemodel
-      nokogiri
 
 GEM
   remote: https://rubygems.org/
@@ -66,10 +67,10 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
-    bullet (4.14.6)
+    bullet (4.14.7)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.9.0)
-    byebug (4.0.5)
+    byebug (5.0.0)
       columnize (= 0.9.0)
     coderay (1.1.0)
     columnize (0.9.0)
@@ -85,22 +86,22 @@ GEM
       activerecord
     http-cookie (1.0.2)
       domain_name (~> 0.5)
-    httparty (0.13.3)
+    httparty (0.13.5)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     i18n (0.7.0)
-    jbuilder (2.2.13)
+    jbuilder (2.2.16)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
-    json (1.8.2)
+    json (1.8.3)
     kgio (2.9.3)
-    loofah (2.0.1)
+    loofah (2.0.2)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mime-types (2.5)
+    mime-types (2.6.1)
     mini_portile (0.6.2)
-    minitest (5.6.1)
+    minitest (5.7.0)
     multi_json (1.11.0)
     multi_xml (0.5.5)
     mysql2 (0.3.18)
@@ -109,7 +110,7 @@ GEM
       mini_portile (~> 0.6.0)
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
-    rack (1.6.0)
+    rack (1.6.1)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.1)
@@ -146,10 +147,10 @@ GEM
     sdoc (0.4.1)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
-    spring (1.3.5)
-    sprockets (3.0.3)
+    spring (1.3.6)
+    sprockets (3.2.0)
       rack (~> 1.0)
-    sprockets-rails (2.2.4)
+    sprockets-rails (2.3.1)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)

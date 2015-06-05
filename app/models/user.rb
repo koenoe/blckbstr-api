@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   has_many :following, through: :active_relationships, source: :followed
   has_many :followers, through: :passive_relationships, source: :follower
 
-  enum sync_status: { needs_to_sync: 1, syncing: 2, synced: 3 }
+  enum sync_status: { default: 0, needs_to_sync: 1, syncing: 2, synced: 3 }
 
   scope :needs_to_sync, -> { where( sync_status: sync_statuses[:needs_to_sync]) }
 

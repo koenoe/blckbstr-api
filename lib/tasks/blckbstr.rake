@@ -21,66 +21,105 @@ namespace :blckbstr do
   task sync_users: :environment do
     Tmdb::Api.key(ENV['tmdb_api_key'])
 
-    User.needs_to_sync.each do |user|
+    # ActiveRecord::Base.transaction do
 
-      # First update sync status
-      # user.sync_status = User.sync_statuses[:syncing]
-      # user.save!
+      User.needs_to_sync.each do |user|
 
-      # Fetch watchlist
-      watchlist = Letterboxd::Scraper.fetch_watchlist(user.letterboxd_username)
-      watchlist.each do |letterboxd_film|
-        movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
-        if movie.nil?
-          # Get film details of Letterboxd
-          letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+        # First update sync status
+        user.sync_status = User.sync_statuses[:syncing]
+        user.save!
 
-          # Save movie to our database
-          movie = save_movie(letterboxd_film)
+        # Fetch watchlist
+        watchlist = Letterboxd::Scraper.fetch_watchlist(user.letterboxd_username)
+        watchlist.each do |letterboxd_film|
+          movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+          if movie.nil?
+            # Get film details of Letterboxd
+            letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+            # Save movie to our database
+            movie = save_movie(letterboxd_film)
+          end
+
+          user.watchlist << movie unless user.watchlist.exists?(id: movie.id)
         end
 
-        user.watchlist << movie unless user.watchlist.exists?(id: movie.id)
+        # Fetch seen
+        seen = Letterboxd::Scraper.fetch_seen(user.letterboxd_username)
+        seen.each do |letterboxd_film|
+          movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+          if movie.nil?
+            # Get film details of Letterboxd
+            letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+            # Save movie to our database
+            movie = save_movie(letterboxd_film)
+          end
+
+          user.movies_seen << movie unless user.movies_seen.exists?(id: movie.id)
+        end
+
+        # Fetch rated 5
+        rated_5 = Letterboxd::Scraper.fetch_rated(user.letterboxd_username, 5)
+        rated_5.each do |letterboxd_film|
+          movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+          if movie.nil?
+            # Get film details of Letterboxd
+            letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+            # Save movie to our database
+            movie = save_movie(letterboxd_film)
+
+            # Save rating
+            rating = Rating.find_or_create_by(movie: movie, user: user)
+            rating.letterboxd_rating = 10
+            rating.save!
+          end
+        end
+
+        # Fetch liked
+        liked = Letterboxd::Scraper.fetch_liked(user.letterboxd_username)
+        liked.each do |letterboxd_film|
+          movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+          if movie.nil?
+            # Get film details of Letterboxd
+            letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+            # Save movie to our database
+            movie = save_movie(letterboxd_film)
+
+            # Save like
+            like = Like.find_or_create_by(likeable: movie, user:user)
+          end
+        end
+
+
+        # Fetch followers and following
+        followers = Letterboxd::Scraper.fetch_followers(user.letterboxd_username)
+        following = Letterboxd::Scraper.fetch_following(user.letterboxd_username)
+
+        followers.each do |letterboxd_user|
+          follower = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
+          follower.name = letterboxd_user[:name]
+          follower.sync_status = User.sync_statuses[:default] if follower.sync_status.nil?
+          follower.follow(user) unless follower.following?(user)
+          follower.save!
+        end
+
+        following.each do |letterboxd_user|
+          following = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
+          following.name = letterboxd_user[:name]
+          following.sync_status = User.sync_statuses[:default] if following.sync_status.nil?
+          following.save!
+
+          user.follow(following) unless user.following?(following)
+        end
+
+        user.sync_status = User.sync_statuses[:synced]
+        user.save!
       end
 
-      # # Fetch seen
-      # seen = Letterboxd::Scraper.fetch_seen(user.letterboxd_username)
-      # seen.each do |letterboxd_film|
-      #   movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
-      #   if movie.nil?
-      #     # Get film details of Letterboxd
-      #     letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
-
-      #     # Save movie to our database
-      #     movie = save_movie(letterboxd_film)
-      #   end
-
-      #   user.movies_seen << movie unless user.movies_seen.exists?(id: movie.id)
-      # end
-
-      # # Fetch followers and following
-      # followers = Letterboxd::Scraper.fetch_followers(user.letterboxd_username)
-      # following = Letterboxd::Scraper.fetch_following(user.letterboxd_username)
-
-      # followers.each do |letterboxd_user|
-      #   follower = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
-      #   follower.name = letterboxd_user[:name]
-      #   follower.sync_status = User.sync_statuses[:needs_to_sync] if follower.sync_status.nil?
-      #   follower.follow(user) unless follower.following?(user)
-      #   follower.save!
-      # end
-
-      # following.each do |letterboxd_user|
-      #   following = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
-      #   following.name = letterboxd_user[:name]
-      #   following.sync_status = User.sync_statuses[:needs_to_sync] if following.sync_status.nil?
-      #   following.save!
-
-      #   user.follow(following) unless user.following?(following)
-      # end
-
-      user.save!
-
-    end
+    # end
   end
 
   desc "Sync popular movies of Letterboxd"
@@ -89,13 +128,15 @@ namespace :blckbstr do
 
     letterboxd_films = Letterboxd::Scraper.fetch_popular(1)
 
-    ActiveRecord::Base.transaction do
+    # ActiveRecord::Base.transaction do
       tmdb_ids = []
       letterboxd_films.each_with_index do |letterboxd_film, index|
         i = index + 1
 
         # Get film details of Letterboxd
         letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+        next if letterboxd_film.nil?
 
         # Save movie to our database
         save_movie(letterboxd_film, i)
@@ -106,7 +147,7 @@ namespace :blckbstr do
 
       # Reset position and popularity of all non popular movies
       Movie.where.not(tmdb_id: tmdb_ids).update_all({ letterboxd_position: nil, tmdb_popularity: nil }) unless tmdb_ids.empty?
-    end
+    # end
 
   end
 
@@ -115,9 +156,22 @@ end
 def save_movie(letterboxd_film, position = nil)
   # Get tmdb movie details
   tmdb_movie = Tmdb::Movie.detail(letterboxd_film[:tmdb_id])
+
+  return if tmdb_movie.nil?
+
   # Get omdb movie details
-  omdb_movie = Omdb::Api.new.fetch(tmdb_movie['title'], letterboxd_film[:release_year])
-  omdb_movie = omdb_movie[:movie] unless omdb_movie[:movie].nil?
+  begin
+    omdb_movie = Omdb::Api.new.fetch(tmdb_movie['title'], letterboxd_film[:release_year])
+    if omdb_movie[:status].present?
+      if omdb_movie[:status].to_s == '200'
+        omdb_movie = omdb_movie[:movie] if omdb_movie[:movie].present?
+      else
+        omdb_movie = nil
+      end
+    end
+  rescue Exception => e
+    puts "Error fetching omdb movie: #{e.message}"
+  end
 
   # Set genres
   genres = []
@@ -180,7 +234,7 @@ def save_movie(letterboxd_film, position = nil)
     movie.tmdb_backdrop_path = tmdb_movie['backdrop_path']
     movie.tmdb_rating = tmdb_movie['vote_average']
     movie.tmdb_vote_count = tmdb_movie['vote_count']
-    movie.release_date = Date.parse(tmdb_movie['release_date'])
+    movie.release_date = Date.parse(tmdb_movie['release_date']) unless tmdb_movie['release_date'].blank?
     movie.runtime = tmdb_movie['runtime']
     movie.plot = tmdb_movie['overview']
     movie.tagline = tmdb_movie['tagline']
@@ -190,13 +244,13 @@ def save_movie(letterboxd_film, position = nil)
     movie.letterboxd_vote_count = letterboxd_film[:vote_count]
   end
   unless omdb_movie.nil?
-    movie.certification = omdb_movie.rated
-    movie.imdb_rating = omdb_movie.imdb_rating
-    movie.imdb_vote_count = omdb_movie.imdb_votes
-    movie.metascore = omdb_movie.metascore
+    movie.certification = omdb_movie.rated unless omdb_movie.rated.nil?
+    movie.imdb_rating = omdb_movie.imdb_rating unless omdb_movie.imdb_rating.nil?
+    movie.imdb_vote_count = omdb_movie.imdb_votes unless omdb_movie.imdb_votes.nil?
+    movie.metascore = omdb_movie.metascore unless omdb_movie.metascore.nil?
 
     # Parse awards and prices
-    omdb_movie_awards = omdb_movie.awards.downcase
+    omdb_movie_awards = omdb_movie.awards.downcase unless omdb_movie.awards.nil?
     include_oscars = true if omdb_movie_awards.include? 'oscar'
     include_nominations = true if omdb_movie_awards.include? 'nomination'
     include_wins = true if omdb_movie_awards.include? 'win'

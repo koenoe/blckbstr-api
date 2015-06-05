@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150522140507) do
+ActiveRecord::Schema.define(version: 20150605135433) do
 
   create_table "companies", force: :cascade do |t|
     t.integer  "tmdb_id",    limit: 4
@@ -49,6 +49,17 @@ ActiveRecord::Schema.define(version: 20150522140507) do
   end
 
   add_index "languages", ["code"], name: "index_languages_on_code", unique: true, using: :btree
+
+  create_table "likes", force: :cascade do |t|
+    t.integer  "likeable_id",   limit: 4
+    t.string   "likeable_type", limit: 255
+    t.integer  "user_id",       limit: 4
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "likes", ["likeable_type", "likeable_id"], name: "index_likes_on_likeable_type_and_likeable_id", using: :btree
+  add_index "likes", ["user_id"], name: "index_likes_on_user_id", using: :btree
 
   create_table "movie_companies", id: false, force: :cascade do |t|
     t.integer "company_id", limit: 4
@@ -127,7 +138,7 @@ ActiveRecord::Schema.define(version: 20150522140507) do
     t.integer  "letterboxd_position",   limit: 4
     t.float    "tmdb_popularity",       limit: 24
     t.string   "tmdb_poster_path",      limit: 255
-    t.string   "tagline",               limit: 255
+    t.text     "tagline",               limit: 65535
     t.integer  "tmdb_vote_count",       limit: 4
     t.integer  "imdb_vote_count",       limit: 4
     t.integer  "letterboxd_vote_count", limit: 4
@@ -139,7 +150,7 @@ ActiveRecord::Schema.define(version: 20150522140507) do
 
   add_index "movies", ["budget"], name: "index_movies_on_budget", using: :btree
   add_index "movies", ["certification"], name: "index_movies_on_certification", using: :btree
-  add_index "movies", ["imdb_id"], name: "index_movies_on_imdb_id", unique: true, using: :btree
+  add_index "movies", ["imdb_id"], name: "index_movies_on_imdb_id", using: :btree
   add_index "movies", ["imdb_rating"], name: "index_movies_on_imdb_rating", using: :btree
   add_index "movies", ["letterboxd_position"], name: "index_movies_on_letterboxd_position", using: :btree
   add_index "movies", ["letterboxd_rating"], name: "index_movies_on_letterboxd_rating", using: :btree
@@ -162,7 +173,19 @@ ActiveRecord::Schema.define(version: 20150522140507) do
     t.integer  "tmdb_id",           limit: 4
   end
 
-  add_index "people", ["tmdb_id"], name: "index_people_on_tmdb_id", unique: true, using: :btree
+  add_index "people", ["tmdb_id"], name: "index_people_on_tmdb_id", using: :btree
+
+  create_table "ratings", force: :cascade do |t|
+    t.integer  "user_id",           limit: 4
+    t.integer  "movie_id",          limit: 4
+    t.float    "letterboxd_rating", limit: 24
+    t.float    "imdb_rating",       limit: 24
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "ratings", ["movie_id"], name: "index_ratings_on_movie_id", using: :btree
+  add_index "ratings", ["user_id"], name: "index_ratings_on_user_id", using: :btree
 
   create_table "relationships", force: :cascade do |t|
     t.integer  "follower_id", limit: 4
@@ -216,7 +239,10 @@ ActiveRecord::Schema.define(version: 20150522140507) do
 
   add_index "watchlists", ["movie_id", "user_id"], name: "watchlists_index", unique: true, using: :btree
 
+  add_foreign_key "likes", "users"
   add_foreign_key "movie_roles", "movies"
   add_foreign_key "movie_roles", "people"
   add_foreign_key "movie_roles", "roles"
+  add_foreign_key "ratings", "movies"
+  add_foreign_key "ratings", "users"
 end
