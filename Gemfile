@@ -22,8 +22,8 @@ gem 'figaro'
 gem 'themoviedb', :github => 'koenoe/themoviedb'
 
 # Letterboxd scraper
-gem 'letterboxd-scraper', :github => 'koenoe/letterboxd-scraper'
-# gem 'letterboxd-scraper', :path => '~/Projects/letterboxd-scraper'
+# gem 'letterboxd-scraper', :github => 'koenoe/letterboxd-scraper'
+gem 'letterboxd-scraper', :path => '~/Projects/letterboxd-scraper'
 
 # OMDb api wrapper
 gem 'omdb', github: 'jvanbaarsen/omdb'
