@@ -10,4 +10,12 @@ class Movie < ActiveRecord::Base
   has_many :roles, through: :movie_roles
   has_many :people, through: :movie_roles
   has_many :likes, :as => :likeable, :dependent => :destroy
+
+  def imdb_url
+    'http://www.imdb.com/title/' + imdb_id
+  end
+
+  def tmdb_backdrop_url
+    'http://image.tmdb.org/t/p/original' + tmdb_backdrop_path
+  end
 end

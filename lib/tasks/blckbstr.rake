@@ -21,124 +21,110 @@ namespace :blckbstr do
   task sync_users: :environment do
     Tmdb::Api.key(ENV['tmdb_api_key'])
 
-    # ActiveRecord::Base.transaction do
+    User.needs_to_sync.each do |user|
 
-      User.needs_to_sync.each do |user|
+      # First update sync status
+      user.sync_status = User.sync_statuses[:syncing]
+      user.save!
 
-        # First update sync status
-        user.sync_status = User.sync_statuses[:syncing]
-        user.save!
+      # Fetch watchlist
+      user.watchlist = []
+      begin
+        watchlist = Letterboxd::Scraper.fetch_watchlist(user.letterboxd_username)
+        watchlist.each do |letterboxd_film|
+          movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+          if movie.nil?
+            # Get film details of Letterboxd
+            letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
 
-        # Fetch watchlist
-        user.watchlist = []
-        begin
-          watchlist = Letterboxd::Scraper.fetch_watchlist(user.letterboxd_username)
-          watchlist.each do |letterboxd_film|
-            movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
-            if movie.nil?
-              # Get film details of Letterboxd
-              letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
-
-              # Save movie to our database
-              movie = save_movie(letterboxd_film)
-            end
-
-            user.watchlist << movie unless user.watchlist.exists?(id: movie.id)
+            # Save movie to our database
+            movie = save_movie(letterboxd_film)
           end
-        rescue Exception => e
-          puts "Error fetching watchlist: #{e.message}"
+
+          user.watchlist << movie unless user.watchlist.exists?(id: movie.id)
         end
-
-        # Fetch seen
-        begin
-          seen = Letterboxd::Scraper.fetch_seen(user.letterboxd_username)
-          seen.each do |letterboxd_film|
-            movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
-            if movie.nil?
-              # Get film details of Letterboxd
-              letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
-
-              # Save movie to our database
-              movie = save_movie(letterboxd_film)
-            end
-
-            user.movies_seen << movie unless user.movies_seen.exists?(id: movie.id)
-          end
-        rescue Exception => e
-          puts "Error fetching seen: #{e.message}"
-        end
-
-        # Fetch rated 5
-        begin
-          rated_5 = Letterboxd::Scraper.fetch_rated(user.letterboxd_username, 5)
-          rated_5.each do |letterboxd_film|
-            movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
-            if movie.nil?
-              # Get film details of Letterboxd
-              letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
-
-              # Save movie to our database
-              movie = save_movie(letterboxd_film)
-            end
-            # Save rating
-            rating = Rating.find_or_create_by(movie: movie, user: user)
-            rating.letterboxd_rating = 10
-            rating.save!
-          end
-        rescue Exception => e
-          puts "Error fetching rated 5: #{e.message}"
-        end
-
-        # Fetch liked
-        begin
-          liked = Letterboxd::Scraper.fetch_liked(user.letterboxd_username)
-          liked.each do |letterboxd_film|
-            movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
-            if movie.nil?
-              # Get film details of Letterboxd
-              letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
-
-              # Save movie to our database
-              movie = save_movie(letterboxd_film)
-            end
-            # Save like
-            like = Like.find_or_create_by(likeable: movie, user:user)
-          end
-        rescue Exception => e
-          puts "Error fetching liked: #{e.message}"
-        end
-
-
-        # Fetch followers and following
-        begin
-          followers = Letterboxd::Scraper.fetch_followers(user.letterboxd_username)
-          following = Letterboxd::Scraper.fetch_following(user.letterboxd_username)
-
-          followers.each do |letterboxd_user|
-            follower = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
-            follower.name = letterboxd_user[:name]
-            follower.sync_status = User.sync_statuses[:needs_to_sync] if follower.sync_status.nil?
-            follower.follow(user) unless follower.following?(user)
-            follower.save!
-          end
-
-          following.each do |letterboxd_user|
-            following = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
-            following.name = letterboxd_user[:name]
-            following.sync_status = User.sync_statuses[:needs_to_sync] if following.sync_status.nil?
-            following.save!
-
-            user.follow(following) unless user.following?(following)
-          end
-        rescue Exception => e
-          puts "Error fetching followers and following: #{e.message}"
-        end
-
-        user.sync_status = User.sync_statuses[:synced]
-        user.save!
+      rescue Exception => e
+        puts "Error fetching watchlist: #{e.message}"
       end
 
-    # end
+      # Fetch seen
+      begin
+        seen = Letterboxd::Scraper.fetch_seen(user.letterboxd_username)
+        seen.each do |letterboxd_film|
+          movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+          if movie.nil?
+            # Get film details of Letterboxd
+            letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+            # Save movie to our database
+            movie = save_movie(letterboxd_film)
+          end
+
+          user.movies_seen << movie unless user.movies_seen.exists?(id: movie.id)
+        end
+      rescue Exception => e
+        puts "Error fetching seen: #{e.message}"
+      end
+
+      # Fetch rated 5
+      begin
+        rated_5 = Letterboxd::Scraper.fetch_rated(user.letterboxd_username, 5)
+        rated_5.each do |letterboxd_film|
+          movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+          if movie.nil?
+            # Get film details of Letterboxd
+            letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+            # Save movie to our database
+            movie = save_movie(letterboxd_film)
+          end
+          # Save rating
+          rating = Rating.find_or_create_by(movie: movie, user: user)
+          rating.letterboxd_rating = 10
+          rating.save!
+        end
+      rescue Exception => e
+        puts "Error fetching rated 5: #{e.message}"
+      end
+
+      # Fetch liked
+      begin
+        liked = Letterboxd::Scraper.fetch_liked(user.letterboxd_username)
+        liked.each do |letterboxd_film|
+          movie = Movie.find_by(letterboxd_slug: letterboxd_film[:slug])
+          if movie.nil?
+            # Get film details of Letterboxd
+            letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+
+            # Save movie to our database
+            movie = save_movie(letterboxd_film)
+          end
+          # Save like
+          like = Like.find_or_create_by(likeable: movie, user:user)
+        end
+      rescue Exception => e
+        puts "Error fetching liked: #{e.message}"
+      end
+
+      # Fetch following
+      begin
+        following = Letterboxd::Scraper.fetch_following(user.letterboxd_username, 6)
+
+        following.each do |letterboxd_user|
+          following = User.find_or_create_by(letterboxd_username: letterboxd_user[:username])
+          following.name = letterboxd_user[:name]
+          following.sync_status = User.sync_statuses[:needs_to_sync] if following.sync_status.nil?
+          following.save!
+
+          user.follow(following) unless user.following?(following)
+        end
+      rescue Exception => e
+        puts "Error fetching followers and following: #{e.message}"
+      end
+
+      user.sync_status = User.sync_statuses[:synced]
+      user.save!
+    end
   end
 
   desc "Sync popular movies of Letterboxd"
@@ -147,27 +133,24 @@ namespace :blckbstr do
 
     letterboxd_films = Letterboxd::Scraper.fetch_popular(1)
 
-    # ActiveRecord::Base.transaction do
-      tmdb_ids = []
-      letterboxd_films.each_with_index do |letterboxd_film, index|
-        i = index + 1
+    tmdb_ids = []
+    letterboxd_films.each_with_index do |letterboxd_film, index|
+      i = index + 1
 
-        # Get film details of Letterboxd
-        letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
+      # Get film details of Letterboxd
+      letterboxd_film = Letterboxd::Scraper.fetch_film(letterboxd_film[:slug])
 
-        next if letterboxd_film.nil?
+      next if letterboxd_film.nil?
 
-        # Save movie to our database
-        save_movie(letterboxd_film, i)
+      # Save movie to our database
+      save_movie(letterboxd_film, i)
 
-        # Put all the unique ids in an array who are updated
-        tmdb_ids << letterboxd_film[:tmdb_id]
-      end
+      # Put all the unique ids in an array who are updated
+      tmdb_ids << letterboxd_film[:tmdb_id]
+    end
 
-      # Reset position and popularity of all non popular movies
-      Movie.where.not(tmdb_id: tmdb_ids).update_all({ letterboxd_position: nil, tmdb_popularity: nil }) unless tmdb_ids.empty?
-    # end
-
+    # Reset position and popularity of all non popular movies
+    Movie.where.not(tmdb_id: tmdb_ids).update_all({ letterboxd_position: nil, tmdb_popularity: nil }) unless tmdb_ids.empty?
   end
 
 end

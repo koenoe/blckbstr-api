@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     get '' => 'status#index'
 
     scope :movies do
-      get '' => 'movies#index'
+      get 'advice' => 'movies#advice'
       get 'random' => 'movies#random'
     end
   end
