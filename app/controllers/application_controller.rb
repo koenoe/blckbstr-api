@@ -18,12 +18,24 @@ class ApplicationController < ActionController::Base
    headers['Access-Control-Request-Method'] = %w{GET POST OPTIONS}.join(",")
   end
 
-  def invalid_resource!(errors = [])
-    api_error(status: 422, errors: errors)
+  def not_found!
+    render(
+      json: {
+        error: 'Not found.',
+        status: 404
+      },
+      status: 404
+    )
   end
 
-  def not_found!
-    api_error(status: 404, errors: 'Not found')
+  def bad_request!
+    render(
+      json: {
+        error: 'Bad request.',
+        status: 400
+      },
+      status: 400
+    )
   end
 
   def api_error(status: 500, errors: [])

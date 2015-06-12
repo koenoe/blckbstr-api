@@ -15,6 +15,10 @@ Rails.application.routes.draw do
       get 'advice' => 'movies#advice'
       get 'random' => 'movies#random'
     end
+
+    scope :users do
+      get 'exist' => 'users#exist'
+    end
   end
 
 end
