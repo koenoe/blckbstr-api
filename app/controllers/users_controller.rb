@@ -5,15 +5,20 @@ class UsersController < ApplicationController
 
   def exist
 
-    return bad_request! if params[:username].blank?
+    return bad_request! if params[:usernames].blank?
 
-    valid = Letterboxd::Scraper.user_exist?(params[:username])
+    errors = []
+    params[:usernames].each do |username|
+      valid = Letterboxd::Scraper.user_exist?(username)
 
-    return not_found! unless valid
+      errors << username unless valid
+    end
+
+    return not_found!(errors) unless errors.blank?
 
     render(
       json: {
-        message: 'Valid user.',
+        message: 'Valid users.',
         status: 200
       }
     )

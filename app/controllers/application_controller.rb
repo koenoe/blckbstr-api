@@ -18,32 +18,34 @@ class ApplicationController < ActionController::Base
    headers['Access-Control-Request-Method'] = %w{GET POST OPTIONS}.join(",")
   end
 
-  def not_found!
+  def not_found!(errors = nil)
     render(
       json: {
-        error: 'Not found.',
+        message: 'Not found.',
+        errors: errors,
         status: 404
       },
       status: 404
     )
   end
 
-  def bad_request!
+  def bad_request!(errors = nil)
     render(
       json: {
-        error: 'Bad request.',
+        message: 'Bad request.',
+        errors: errors,
         status: 400
       },
       status: 400
     )
   end
 
-  def api_error(status: 500, errors: [])
-    unless Rails.env.production?
-      puts errors.full_messages if errors.respond_to? :full_messages
-    end
-    head status: status and return if errors.empty?
+  # def api_error(status: 500, errors: [])
+  #   unless Rails.env.production?
+  #     puts errors.full_messages if errors.respond_to? :full_messages
+  #   end
+  #   head status: status and return if errors.empty?
 
-    api_error(status: 500, errors: errors)
-  end
+  #   api_error(status: 500, errors: errors)
+  # end
 end
