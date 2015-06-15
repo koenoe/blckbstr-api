@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     end
 
     scope :users do
-      get 'exist' => 'users#exist'
+      get 'validate' => 'users#validate'
     end
   end
 
