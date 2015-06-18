@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150618184549) do
+ActiveRecord::Schema.define(version: 20150618194210) do
 
   create_table "advice_users", id: false, force: :cascade do |t|
     t.integer "advice_id", limit: 4
@@ -22,14 +22,14 @@ ActiveRecord::Schema.define(version: 20150618184549) do
 
   create_table "advices", force: :cascade do |t|
     t.integer  "movie_id",   limit: 4
-    t.string   "hash",       limit: 255
+    t.string   "digest",     limit: 255
     t.string   "email",      limit: 255
     t.integer  "status",     limit: 4
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
 
-  add_index "advices", ["hash"], name: "index_advices_on_hash", unique: true, using: :btree
+  add_index "advices", ["digest"], name: "index_advices_on_digest", unique: true, using: :btree
   add_index "advices", ["movie_id"], name: "index_advices_on_movie_id", using: :btree
 
   create_table "companies", force: :cascade do |t|
