@@ -18,4 +18,11 @@ class Movie < ActiveRecord::Base
   def tmdb_backdrop_url
     'http://image.tmdb.org/t/p/original' + tmdb_backdrop_path
   end
+
+  def self.random
+    movies = Rails.cache.fetch('movies_random', expires_in: 24.hours) do
+      Movie.where.not(tmdb_backdrop_path: '', imdb_id: '').limit(500).order(tmdb_popularity: :desc).order("RAND()")
+    end
+    movies.sample
+  end
 end
