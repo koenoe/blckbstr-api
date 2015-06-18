@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
   has_and_belongs_to_many :watchlist, join_table: 'watchlists', class_name: 'Movie'
   has_and_belongs_to_many :movies_seen, join_table: 'movie_views', class_name: 'Movie'
+  has_and_belongs_to_many :advices, join_table: 'advice_users', class_name: 'Advice'
 
   has_many :active_relationships, class_name:  'Relationship', foreign_key: 'follower_id', dependent: :destroy
   has_many :passive_relationships, class_name:  'Relationship', foreign_key: 'followed_id', dependent: :destroy

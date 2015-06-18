@@ -5,10 +5,12 @@ class AdvicesController < ApplicationController
 
   def create
 
+    # We need to validate the usernames obviously, if something is wrong just return a bad request
     return bad_request! if params[:usernames].blank? || !params[:usernames].is_a?(Array)
     validations = params[:usernames].map {|username| Letterboxd::Scraper.user_exist?(username) }
     return bad_request! if validations.include? false
 
+    # Check if the users exists in our database, if not create them with needs_to_sync status so the cronjob will pick them up
     users = User.where(letterboxd_username: params[:usernames])
     usernames = users.pluck(:letterboxd_username)
     new_usernames = params[:usernames] - usernames | usernames - params[:usernames]
@@ -19,11 +21,16 @@ class AdvicesController < ApplicationController
       usernames = usernames + new_usernames
     end
 
+    # Maybe we have some users already in our database, but not active (an active user can follow those for example).
+    # Update these users to needs_to_sync
     users.default.update_all(sync_status: User.sync_statuses[:needs_to_sync])
 
+    # If one of our users needs a sync, we can't give advice right away. In that case they will receive advice by email.
     needs_to_sync = users.pluck(:sync_status).include? User.sync_statuses[:needs_to_sync]
+    # Obviously we need an email address if any of the users need a sync. Otherwise just return a bad request.
     return bad_request! if needs_to_sync && params[:email].blank?
 
+    # We can only retrieve a movie for this advice if all the requested users are synced.
     unless needs_to_sync
       advice_movie = Movie.random
     end
