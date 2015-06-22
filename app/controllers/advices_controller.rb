@@ -46,6 +46,7 @@ class AdvicesController < ApplicationController
     render(
       json: {
         hash: advice.digest,
+        email: advice.email.present?,
         status: 200
       }
     )

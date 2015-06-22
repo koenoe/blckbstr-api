@@ -28,6 +28,9 @@ gem 'letterboxd-scraper', :path => '~/Projects/letterboxd-scraper'
 # OMDb api wrapper
 gem 'omdb', github: 'jvanbaarsen/omdb'
 
+#  Handle CORS
+gem 'rack-cors'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

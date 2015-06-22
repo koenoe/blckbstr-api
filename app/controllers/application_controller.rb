@@ -2,7 +2,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   before_filter :destroy_session, :set_tmdb_config
-  after_filter :set_access_control_headers
 
   def destroy_session
     request.session_options[:skip] = true
@@ -11,11 +10,6 @@ class ApplicationController < ActionController::Base
   def set_tmdb_config
     Tmdb::Api.key(ENV['tmdb_api_key'])
     @tmdb_config = Tmdb::Configuration.new
-  end
-
-  def set_access_control_headers
-   headers['Access-Control-Allow-Origin'] = "*"
-   headers['Access-Control-Request-Method'] = %w{GET POST OPTIONS}.join(",")
   end
 
   def not_found!(errors = nil)
