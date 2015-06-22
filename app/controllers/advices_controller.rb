@@ -6,11 +6,19 @@ class AdvicesController < ApplicationController
   def show
     advice = Advice.find_by_digest(params[:id])
 
-    return not_found! if advice.nil?
+    # Fallback to retrieve movie information on Letterboxd slug, just because it's cool.
+    # Actually this should be in our movie controller, but otherwise we've to do 2 calls in our AngularJS app.
+    if advice.nil?
+      movie = Movie.find_by_letterboxd_slug(params[:id])
+    else
+      movie = advice.movie
+    end
+
+    return not_found! if movie.nil?
 
     render(
       json: {
-        movie: advice.movie,
+        movie: movie,
         status: 200
       }
     )
