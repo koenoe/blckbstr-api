@@ -11,6 +11,10 @@ class Movie < ActiveRecord::Base
   has_many :people, through: :movie_roles
   has_many :likes, :as => :likeable, :dependent => :destroy
 
+  def letterboxd_url
+    'http://letterboxd.com/film/' + letterboxd_slug
+  end
+
   def imdb_url
     'http://www.imdb.com/title/' + imdb_id
   end
@@ -19,10 +23,18 @@ class Movie < ActiveRecord::Base
     'http://image.tmdb.org/t/p/original' + tmdb_backdrop_path
   end
 
+  def tmdb_poster_url
+    'http://image.tmdb.org/t/p/original' + tmdb_poster_path
+  end
+
   def self.random
     movies = Rails.cache.fetch('movies_random', expires_in: 24.hours) do
       Movie.where.not(tmdb_backdrop_path: '', imdb_id: '').limit(500).order(tmdb_popularity: :desc).order("RAND()")
     end
     movies.sample
+  end
+
+  def as_json(options = {})
+    super(methods: [:letterboxd_url, :imdb_url, :tmdb_backdrop_url, :tmdb_poster_url], except: [:id, :letterboxd_slug, :tmdb_backdrop_path, :tmdb_poster_path, :created_at, :updated_at])
   end
 end

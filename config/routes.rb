@@ -11,9 +11,7 @@ Rails.application.routes.draw do
 
     get '' => 'status#index'
 
-    scope :advices do
-      post 'create' => 'advices#create'
-    end
+    resources :advices, only: [:show, :create]
 
     scope :movies do
       get 'random' => 'movies#random'

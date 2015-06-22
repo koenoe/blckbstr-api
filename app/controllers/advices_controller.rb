@@ -3,6 +3,16 @@ class AdvicesController < ApplicationController
   def index
   end
 
+  def show
+    advice = Advice.find_by_digest(params[:id])
+
+    return not_found! if advice.nil?
+
+    render(
+      json: advice.movie
+    )
+  end
+
   def create
 
     # We need to validate the usernames obviously, if something is wrong just return a bad request
