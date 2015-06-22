@@ -27,6 +27,10 @@ class Movie < ActiveRecord::Base
     'http://image.tmdb.org/t/p/original' + tmdb_poster_path
   end
 
+  def release_year
+    release_date.strftime('%Y')
+  end
+
   def self.random
     movies = Rails.cache.fetch('movies_random', expires_in: 24.hours) do
       Movie.where.not(tmdb_backdrop_path: '', imdb_id: '').limit(500).order(tmdb_popularity: :desc).order("RAND()")
@@ -35,6 +39,6 @@ class Movie < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super(methods: [:letterboxd_url, :imdb_url, :tmdb_backdrop_url, :tmdb_poster_url], except: [:id, :letterboxd_slug, :tmdb_backdrop_path, :tmdb_poster_path, :created_at, :updated_at])
+    super(methods: [:letterboxd_url, :imdb_url, :tmdb_backdrop_url, :tmdb_poster_url, :release_year], except: [:id, :letterboxd_slug, :tmdb_backdrop_path, :tmdb_poster_path, :created_at, :updated_at])
   end
 end

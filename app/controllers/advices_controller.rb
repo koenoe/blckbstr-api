@@ -9,7 +9,10 @@ class AdvicesController < ApplicationController
     return not_found! if advice.nil?
 
     render(
-      json: advice.movie
+      json: {
+        movie: advice.movie,
+        status: 200
+      }
     )
   end
 
