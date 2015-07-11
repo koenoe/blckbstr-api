@@ -31,6 +31,18 @@ class Movie < ActiveRecord::Base
     release_date.strftime('%Y')
   end
 
+  def directors
+    role = Role.find_by_title('Director')
+    movie_roles = MovieRole.includes(:person).where(role: role, movie: self)
+    movie_roles
+  end
+
+  def writers
+    roles = Role.where("title != 'Actor' AND title != 'Director'")
+    movie_roles = MovieRole.includes(:person).where(role: roles, movie: self)
+    movie_roles
+  end
+
   def self.random
     movies = Rails.cache.fetch('movies_random', expires_in: 24.hours) do
       Movie.where.not(tmdb_backdrop_path: '', imdb_id: '').limit(500).order(tmdb_popularity: :desc).order("RAND()")
@@ -39,6 +51,32 @@ class Movie < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super(methods: [:letterboxd_url, :imdb_url, :tmdb_backdrop_url, :tmdb_poster_url, :release_year], except: [:id, :letterboxd_slug, :tmdb_backdrop_path, :tmdb_poster_path, :created_at, :updated_at])
+    super(
+      methods: [:letterboxd_url, :imdb_url, :tmdb_backdrop_url, :tmdb_poster_url, :release_year],
+      except: [:id, :letterboxd_slug, :tmdb_backdrop_path, :tmdb_poster_path, :created_at, :updated_at],
+      include: {
+        genres: {
+          except: [:id, :created_at, :updated_at]
+        },
+        languages: {
+          except: [:id, :created_at, :updated_at]
+        },
+        countries: {
+          except: [:id, :created_at, :updated_at]
+        },
+        movie_roles: {
+          except: [:id, :movie_id, :person_id, :role_id, :created_at, :updated_at],
+          include: {
+            person: {
+              except: [:id, :created_at, :updated_at, :tmdb_profile_path, :place_of_birth, :birthdate, :deathdate],
+              methods: [:tmdb_profile_url]
+            },
+            role: {
+              except: [:id, :created_at, :updated_at]
+            }
+          }
+        }
+      }
+    )
   end
 end
