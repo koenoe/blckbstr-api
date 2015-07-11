@@ -11,8 +11,10 @@ class User < ActiveRecord::Base
   enum sync_status: { default: 0, needs_to_sync: 1, syncing: 2, synced: 3 }
 
   scope :needs_to_sync, -> { where( sync_status: sync_statuses[:needs_to_sync]) }
-  scope :default, -> { where( sync_status: sync_statuses[:default]) }
+  scope :default, -> { where("`sync_status` = ? OR `sync_status` IS NULL", sync_statuses[:default]) }
   scope :synced, -> { where( sync_status: sync_statuses[:synced]) }
+  scope :active, -> { where( active: true) }
+  scope :inactive, -> { where("`active` = ? OR `active` IS NULL", false) }
 
   # Follows a user.
   def follow(other_user)

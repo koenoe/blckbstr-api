@@ -37,14 +37,14 @@ class AdvicesController < ApplicationController
     new_usernames = params[:usernames] - usernames | usernames - params[:usernames]
 
     unless new_usernames.blank?
-      new_usernames.map {|username| User.create(letterboxd_username: username, sync_status: User.sync_statuses[:needs_to_sync]) }
+      new_usernames.map {|username| User.create(letterboxd_username: username, sync_status: User.sync_statuses[:needs_to_sync], active: true) }
       users = User.where(letterboxd_username: usernames + new_usernames)
-      usernames = usernames + new_usernames
     end
 
     # Maybe we have some users already in our database, but not active (an active user can follow those for example).
     # Update these users to needs_to_sync
     users.default.update_all(sync_status: User.sync_statuses[:needs_to_sync])
+    users.inactive.update_all(active: true)
 
     # If one of our users needs a sync, we can't give advice right away. In that case they will receive advice by email.
     needs_to_sync = users.pluck(:sync_status).include? User.sync_statuses[:needs_to_sync]
@@ -60,7 +60,6 @@ class AdvicesController < ApplicationController
     advice.email = params[:email] unless params[:email].blank?
     advice.users = users
     advice.digest = Digest::SHA1.hexdigest("#{advice.created_at}#{advice.id}")
-    advice.status = Advice.statuses[:done] unless needs_to_sync
     advice.movie = advice_movie unless advice_movie.nil?
     advice.save
 
