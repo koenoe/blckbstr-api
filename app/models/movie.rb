@@ -35,6 +35,10 @@ class Movie < ActiveRecord::Base
     release_date.strftime('%Y')
   end
 
+  def trailer_full_url
+    "#{trailer_url}?html5=1&amp;rel=0&amp;showinfo=0"
+  end
+
   def directors(limit = 0)
     role = Role.find_by_title('Director')
     movie_roles = MovieRole.includes(:person).where(role: role, movie: self).limit(limit)
@@ -55,9 +59,9 @@ class Movie < ActiveRecord::Base
 
   def ratings
     ratings = []
-    ratings << { name: 'Letterboxd', votes: letterboxd_vote_count, rating: letterboxd_rating }
-    ratings << { name: 'TMDb', votes: tmdb_vote_count, rating: tmdb_rating }
-    ratings << { name: 'IMDb', votes: imdb_vote_count, rating: imdb_rating }
+    ratings << { name: 'Letterboxd', votes: letterboxd_vote_count, rating_calculate: (letterboxd_rating * 10).round, rating: ApplicationController.helpers.number_with_precision(letterboxd_rating, precision: 1) }
+    ratings << { name: 'TMDb', votes: tmdb_vote_count, rating_calculate: (tmdb_rating * 10).round, rating: ApplicationController.helpers.number_with_precision(tmdb_rating, precision: 1) }
+    ratings << { name: 'IMDb', votes: imdb_vote_count, rating_calculate: (imdb_rating * 10).round, rating: ApplicationController.helpers.number_with_precision(imdb_rating, precision: 1) }
     ratings
   end
 
@@ -78,7 +82,7 @@ class Movie < ActiveRecord::Base
       plot: plot,
       runtime: runtime,
       release_date: release_date.strftime('%d %B %Y'),
-      trailer_url: trailer_url,
+      trailer_url: trailer_full_url,
       oscars: oscars,
       wins: wins,
       nominations: nominations,
