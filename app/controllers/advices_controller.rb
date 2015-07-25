@@ -18,7 +18,7 @@ class AdvicesController < ApplicationController
 
     render(
       json: {
-        movie: movie,
+        movie: movie.as_json,
         status: 200
       }
     )

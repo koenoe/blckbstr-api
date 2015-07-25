@@ -19,6 +19,10 @@ class Movie < ActiveRecord::Base
     'http://www.imdb.com/title/' + imdb_id
   end
 
+  def tmdb_url
+    'http://www.themoviedb.org/movie/' + tmdb_id
+  end
+
   def tmdb_backdrop_url
     'http://image.tmdb.org/t/p/original' + tmdb_backdrop_path
   end
@@ -31,16 +35,30 @@ class Movie < ActiveRecord::Base
     release_date.strftime('%Y')
   end
 
-  def directors
+  def directors(limit = 0)
     role = Role.find_by_title('Director')
-    movie_roles = MovieRole.includes(:person).where(role: role, movie: self)
+    movie_roles = MovieRole.includes(:person).where(role: role, movie: self).limit(limit)
     movie_roles
   end
 
-  def writers
+  def writers(limit = 0)
     roles = Role.where("title != 'Actor' AND title != 'Director'")
-    movie_roles = MovieRole.includes(:person).where(role: roles, movie: self)
+    movie_roles = MovieRole.includes(:person).where(role: roles, movie: self).limit(limit)
     movie_roles
+  end
+
+  def actors(limit = 0)
+    roles = Role.where(title: 'Actor')
+    movie_roles = MovieRole.includes(:person).where(role: roles, movie: self).limit(limit)
+    movie_roles
+  end
+
+  def ratings
+    ratings = []
+    ratings << { name: 'Letterboxd', votes: letterboxd_vote_count, rating: letterboxd_rating }
+    ratings << { name: 'TMDb', votes: tmdb_vote_count, rating: tmdb_rating }
+    ratings << { name: 'IMDb', votes: imdb_vote_count, rating: imdb_rating }
+    ratings
   end
 
   def self.random
@@ -51,32 +69,40 @@ class Movie < ActiveRecord::Base
   end
 
   def as_json(options = {})
-    super(
-      methods: [:letterboxd_url, :imdb_url, :tmdb_backdrop_url, :tmdb_poster_url, :release_year],
-      except: [:id, :letterboxd_slug, :tmdb_backdrop_path, :tmdb_poster_path, :created_at, :updated_at],
-      include: {
-        genres: {
-          except: [:id, :created_at, :updated_at]
-        },
-        languages: {
-          except: [:id, :created_at, :updated_at]
-        },
-        countries: {
-          except: [:id, :created_at, :updated_at]
-        },
-        movie_roles: {
-          except: [:id, :movie_id, :person_id, :role_id, :created_at, :updated_at],
-          include: {
-            person: {
-              except: [:id, :created_at, :updated_at, :tmdb_profile_path, :place_of_birth, :birthdate, :deathdate],
-              methods: [:tmdb_profile_url]
-            },
-            role: {
-              except: [:id, :created_at, :updated_at]
-            }
-          }
-        }
-      }
-    )
+    oscars = 0 if oscars.blank?
+    {
+      title: title,
+      release_year: release_year,
+      certification: certification,
+      tagline: tagline,
+      plot: plot,
+      runtime: runtime,
+      release_date: release_date.strftime('%d %B %Y'),
+      trailer_url: trailer_url,
+      oscars: oscars,
+      wins: wins,
+      nominations: nominations,
+      budget: budget,
+      revenue: money_format(revenue),
+      budget: money_format(budget),
+      letterboxd_url: letterboxd_url,
+      imdb_url: imdb_url,
+      tmdb_url: tmdb_url,
+      tmdb_backdrop_url: tmdb_backdrop_url,
+      tmdb_poster_url: tmdb_poster_url,
+      countries: countries.pluck(:code).join(', ').downcase,
+      languages: languages.pluck(:code).join(', '),
+      directors: directors(3).map { |d| d.person.name }.uniq,
+      writers: writers(3).map { |w| w.person.name }.uniq,
+      actors: actors(3).map { |a| { character: a.character, name: a.person.name, image: a.person.tmdb_profile_url } },
+      genres: genres.pluck(:title),
+      ratings: ratings
+    }
   end
+
+  private
+    def money_format(value)
+      return '-' if value.blank?
+      ApplicationController.helpers.number_to_currency(value, separator: '.', delimiter: ',', precision: 0, unit: '$')
+    end
 end
