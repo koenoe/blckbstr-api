@@ -36,7 +36,7 @@ class Movie < ActiveRecord::Base
   end
 
   def trailer_full_url
-    "#{trailer_url}?html5=1&amp;rel=0&amp;showinfo=0"
+    "#{trailer_url}?html5=1&amp;rel=0&amp;showinfo=0" unless trailer_url.blank?
   end
 
   def directors(limit = 0)
