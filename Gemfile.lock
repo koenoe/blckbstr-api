@@ -7,18 +7,19 @@ GIT
       rest-client
 
 GIT
+  remote: git://github.com/koenoe/letterboxd-scraper.git
+  revision: 7694f0d2b65fd82aa4dcd0dd72fc4f1efa0439ab
+  specs:
+    letterboxd-scraper (0.1.0)
+      activemodel
+      nokogiri
+
+GIT
   remote: git://github.com/koenoe/themoviedb.git
   revision: 0b44da261aa9b6115cda7021015bf1e28d14027b
   specs:
     themoviedb (0.1.0)
       httparty
-
-PATH
-  remote: ~/Projects/letterboxd-scraper
-  specs:
-    letterboxd-scraper (0.1.0)
-      activemodel
-      nokogiri
 
 GEM
   remote: https://rubygems.org/
@@ -193,3 +194,6 @@ DEPENDENCIES
   themoviedb!
   unicorn
   web-console (~> 2.0)
+
+BUNDLED WITH
+   1.10.6
